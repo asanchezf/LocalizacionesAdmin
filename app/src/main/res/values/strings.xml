@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Localizaciones Admin</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="desarrollador">Desarrollador Android:</string>
+    <string name="email_desarrollador">antoniom.sanchezf@gmail.com</string>
+    <string name="usuarios">Usuarios</string>
+    <string name="todas_las_posiciones">Todas las posiciones</string>
+    <string name="Ultimas_posiciones">Últimas posiciones</string>
+</resources>
