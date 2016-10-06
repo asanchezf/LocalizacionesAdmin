@@ -1,31 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/fragment_main">
+
+    android:orientation="vertical"
+    android:background="@android:color/background_dark">
 
 
-   <!-- <android.support.v7.widget.RecyclerView
-        android:id="@+id/reciclador"
+    <ImageView
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:src="@drawable/planeta"
+        android:layout_width="280dp"
+        android:layout_height="210dp"
+        android:scaleType="centerCrop"
+        android:id="@+id/imageView2" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textStyle="bold|italic"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="MIS LOCALIZACIONES"
+
+        android:layout_marginTop="8dp"
+        android:id="@+id/textView6"
+        android:typeface="sans"
+        android:textColor="@color/md_white_1000" />
+
+    <ImageView
+        android:layout_marginTop="10dp"
+        android:id="@+id/imageView3"
+        android:src="@drawable/brujula_litle"
+        android:layout_width="250dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+
+        />
+
+    <TextView
+
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="3dp"
-        android:scrollbars="vertical" />-->
-   <Button
-       android:id="@+id/boton"
-       android:text="boton"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:layout_alignParentTop="true"
-       android:layout_centerHorizontal="true"
-       android:layout_marginTop="135dp" />
+        android:layout_height="15dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="Desarrollador Android:"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textColor="@color/md_green_100" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="16dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="antoniom.sanchezf@gmail.com"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/md_green_100" />
 
 
-   <TextView
-       android:id="@+id/txtresultado"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:layout_marginTop="185dp"/>
-
-
-</RelativeLayout>
+</LinearLayout>

@@ -1,6 +1,7 @@
 package com.antonioejemplo.localizacionesadmin;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +42,7 @@ public class AdaptadorUltimasPosiciones extends RecyclerView.Adapter<AdaptadorUl
         this.contexto = contexto;
         this.escucha = escucha;
         this.items = datos;
+
 
     }
 
@@ -192,10 +194,10 @@ public class AdaptadorUltimasPosiciones extends RecyclerView.Adapter<AdaptadorUl
             imagenUsuario_ult = (ImageView) itemView.findViewById(R.id.imagenUsuario_ult);
 
             //Preparamos el listener y se lo asignamos a los controles que queramos...
-            itemView.setOnClickListener(this);
+            itemView.setOnClickListener(this);//Para todo el carview completo
 
-            imagenUsuario_ult.setOnClickListener(this);
-            txtNombre_ult.setOnClickListener(this);
+            imagenUsuario_ult.setOnClickListener(this);//para la imagen
+            txtNombre_ult.setOnClickListener(this);//para el nombre
 
 
         }

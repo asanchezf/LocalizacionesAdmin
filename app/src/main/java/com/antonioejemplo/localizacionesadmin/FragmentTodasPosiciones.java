@@ -2,7 +2,6 @@ package com.antonioejemplo.localizacionesadmin;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -28,26 +27,19 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import modelos.Usuarios;
+import modelos.TodasLasPosiciones;
 
 
 /**
  * Fragmento principal que contiene el RecyclerView con los usuarios
  */
 
-public class FragmentUsuarios extends Fragment{
+public class FragmentTodasPosiciones extends Fragment{
     private static final String LOGTAG = "OBTENER MARCADORES";
-
-    //CONSTANTES PARA EL MODO FORMULARIO Y PARA LOS TIPOS DE LLAMADA.============================
-    public static final String C_MODO = "modo";
-    public static final int C_VISUALIZAR = 551;
-    public static final int C_CREAR = 552;
-    public static final int C_EDITAR = 553;
-    public static final int C_ELIMINAR = 554;
     /*
         Adaptador del recycler view
          */
-    private Adaptador adapter;
+    private AdaptadorTodasPosiciones adapter;
     /*
     Instancia global del recycler view
      */
@@ -58,8 +50,8 @@ public class FragmentUsuarios extends Fragment{
     private RecyclerView.LayoutManager lManager;
     private RequestQueue requestQueue;//Cola de peticiones de Volley. se encarga de gestionar automáticamente el envió de las peticiones, la administración de los hilos, la creación de la caché y la publicación de resultados en la UI.
     private JsonObjectRequest myjsonObjectRequest;
-    private List<Usuarios> listdatos;//Se le enviará al Adaptador
-    private Usuarios usuarios;
+    private List<TodasLasPosiciones> listdatos;//Se le enviará al Adaptador
+    private TodasLasPosiciones todasLasPosiciones;
 
     //Variable que le pasamos a la llamada del adaptador. Necesita un listener
     private Adaptador.OnItemClickListener listener;
@@ -70,11 +62,8 @@ public class FragmentUsuarios extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Context contexto = getActivity();
 
-
-
-
        // listener= OnItemClickListener;
-        View v = inflater.inflate(R.layout.fragment_usuarios, container, false);
+        View v = inflater.inflate(R.layout.fragment_todas_posiciones, container, false);
 
         lista = (RecyclerView) v.findViewById(R.id.reciclador);
 
@@ -87,7 +76,7 @@ public class FragmentUsuarios extends Fragment{
                 new LinearLayoutManager(contexto, LinearLayoutManager.VERTICAL, false));
 
         requestQueue = Volley.newRequestQueue(contexto);
-        traerUsuarios();
+        traerTodasPosiciones();
 
        //La llamada al adaptador llega vacía. Hay que llamarle desde el método traerUsuarios();
         /*adapter=new Adaptador(listdatos,listener,getContext());
@@ -98,14 +87,14 @@ public class FragmentUsuarios extends Fragment{
         return v;
     }
 
-    private void traerUsuarios() {
+    private void traerTodasPosiciones() {
 
         String tag_json_obj_actual = "json_obj_req_actual";
-
-        String patronUrl = "http://petty.hol.es/obtener_usuarios.php";
+        //http://petty.hol.es/obtener_localizaciones.php
+        String patronUrl = "http://petty.hol.es/obtener_localizaciones_todas.php";
         String uri = String.format(patronUrl);
 
-        listdatos= new ArrayList<Usuarios>();
+        listdatos= new ArrayList<TodasLasPosiciones>();
 
         Log.v(LOGTAG, "Ha llegado a immediateRequestTiempoActual. Uri: " + uri);
 
@@ -119,15 +108,20 @@ public class FragmentUsuarios extends Fragment{
 
                         //String id = "";
                         int id;
-                        String username = "";
-                        String password = "";
-                        String email = "";
-                        String id_Android = "";
-                        String telefono = "";
-                        String alta = "";
+                        String poblacion = "";
+                        String calle = "";
+                        String numero = "";
+                        String longitud = "";
+                        String latitud = "";
+                        String velocidad = "";
+                        String fecha = "";
+                        String nombre="";
 
-
-
+                        /*  {"Id":"10","Id_Usuario":"10","Poblacion":"M\u00f3stoles","Calle":"Calle Rubens",
+                        "Numero":" 12","Longitud":"-3.87124","Latitud":"40.3294","Velocidad":"0.37042078375816",
+                        "FechaHora":"13-09-2016 18:08:48","Modificado":"0000-00-00 00:00:00","Username":"Pepe",
+                        "Password":"1","Email":"email","ID_Android":null,"Telefono":"89977665",
+                        "FechaCreacion":"2016-05-10 17:11:08"}*/
 
                         try {
 
@@ -139,24 +133,28 @@ public class FragmentUsuarios extends Fragment{
                                 for (int z = 0; z < json_array.length(); z++) {
                                     //OJO: se ha cambiado a int. Antes era un String
                                     id= json_array.getJSONObject(z).getInt("Id");
-                                    username = json_array.getJSONObject(z).getString("Username");
-                                    password = json_array.getJSONObject(z).getString("Password");
-                                    email = json_array.getJSONObject(z).getString("Email");
-                                    id_Android = json_array.getJSONObject(z).getString("ID_Android");
+                                    nombre = json_array.getJSONObject(z).getString("Username");
+                                    fecha = json_array.getJSONObject(z).getString("FechaHora");
+                                    velocidad = json_array.getJSONObject(z).getString("Velocidad");
+                                    latitud = json_array.getJSONObject(z).getString("Latitud");
+                                    longitud = json_array.getJSONObject(z).getString("Longitud");
+                                    calle = json_array.getJSONObject(z).getString("Calle");
+                                    poblacion = json_array.getJSONObject(z).getString("Poblacion");
+                                    numero = json_array.getJSONObject(z).getString("Numero");
 
-                                    telefono = json_array.getJSONObject(z).getString("Telefono");
-                                    alta = json_array.getJSONObject(z).getString("FechaCreacion");
 
-                                    usuarios=new Usuarios();
-                                    usuarios.setId(id);
-                                    usuarios.setUsername(username);
-                                    usuarios.setPassword(password);
-                                    usuarios.setEmail(email);
-                                    usuarios.setID_Android(id_Android);
-                                    usuarios.setTelefono(telefono);
-                                    usuarios.setFechaCreacion(alta);
+                                    todasLasPosiciones=new TodasLasPosiciones();
+                                    todasLasPosiciones.setId(id);
+                                    todasLasPosiciones.setUsername(nombre);
+                                    todasLasPosiciones.setCalle(calle);
+                                    todasLasPosiciones.setFechaHora(fecha);
+                                    todasLasPosiciones.setLatitud(latitud);
+                                    todasLasPosiciones.setLongitud(longitud);
+                                    todasLasPosiciones.setNumero(numero);
+                                    todasLasPosiciones.setPoblacion(poblacion);
+                                    todasLasPosiciones.setVelocidad(velocidad);
 
-                                    listdatos.add(usuarios);
+                                    listdatos.add(todasLasPosiciones);
                                     Log.d(LOGTAG, "Tamaño listadatos: "+listdatos.size());
 
                                 }
@@ -165,30 +163,16 @@ public class FragmentUsuarios extends Fragment{
 
                         //Al adaptador le pasamos la lista, el listener y el contexto
                         //Le pasamos new Adaptador.OnItemClickListener() para inicializar el listener
-                        adapter=new Adaptador(listdatos, new Adaptador.OnItemClickListener() {
+                        adapter=new AdaptadorTodasPosiciones(listdatos, new AdaptadorTodasPosiciones.OnItemClickListener() {
                             @Override
                             public void onClick(RecyclerView.ViewHolder holder, int idPromocion, View v) {
 
-                                if(v.getId()==R.id.imagenUsuario){
+                                if(v.getId()==R.id.imagenUsuario_todas){
                                     Toast.makeText(getContext(),"Has pulsado en la imagen",Toast.LENGTH_LONG).show();
                                 }
 
-                               else if(v.getId()==R.id.txtNombre){
+                               else if(v.getId()==R.id.txtNombre_todas){
                                     Toast.makeText(getContext(),"Has pulsado en el nombre",Toast.LENGTH_LONG).show();
-                                }
-
-                                else{
-
-                                    Toast.makeText(getContext(),"Has pulsado en el cardview",Toast.LENGTH_LONG).show();
-
-                                    crear();
-
-                                    /*Intent intent=new Intent(C_VISUALIZAR,AltaUsuarios.class);
-                                    intent.putExtra("Longitud",dlongitud);
-                                    intent.putExtra("Latitud",dlatitud);
-                                    intent.putExtra("Nombre",nombreusuariomapa);
-                                    intent.putExtra("Telefono",telefonousuariomapa);
-                                    startActivity(intent);*/
                                 }
 
                             }
@@ -226,12 +210,6 @@ public class FragmentUsuarios extends Fragment{
 
     }
 
-    private void crear() {
-        Intent intent=new Intent(getActivity(),AltaUsuarios.class);
-        startActivity(intent);
-
-
-    }
 
 
 }

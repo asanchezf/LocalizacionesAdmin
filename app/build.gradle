@@ -5,7 +5,7 @@ android {
     buildToolsVersion "24.0.1"
     defaultConfig {
         applicationId "com.antonioejemplo.localizacionesadmin"
-        minSdkVersion 16
+        minSdkVersion 17
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
@@ -33,4 +33,5 @@ dependencies {
     compile 'javax.annotation:javax.annotation-api:1.2'
 
     compile 'com.android.support:cardview-v7:24.2.1'
+    compile 'com.google.android.gms:play-services-maps:9.6.1'
 }

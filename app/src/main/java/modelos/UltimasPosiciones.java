@@ -7,7 +7,15 @@ package modelos;
 public class UltimasPosiciones {
 
     private int Id;
-    private String Username,FechaHora,Velocidad,Latitud,Longitud,Calle,Numero,Poblacion;
+    private String Username,FechaHora,Velocidad,Latitud,Longitud,Calle,Numero,Poblacion,Telefono;
+
+    public String getTelefono() {
+        return Telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        Telefono = telefono;
+    }
 
     public int getId() {
         return Id;
@@ -79,5 +87,21 @@ public class UltimasPosiciones {
 
     public void setPoblacion(String poblacion) {
         Poblacion = poblacion;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UltimasPosiciones that = (UltimasPosiciones) o;
+
+        return getId() == that.getId();
+
+    }
+
+    @Override
+    public int hashCode() {
+        return getId();
     }
 }

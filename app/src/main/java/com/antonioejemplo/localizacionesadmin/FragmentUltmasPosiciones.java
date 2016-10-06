@@ -1,10 +1,11 @@
 package com.antonioejemplo.localizacionesadmin;
 
 
+import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -25,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import modelos.UltimasPosiciones;
@@ -34,7 +36,8 @@ import modelos.UltimasPosiciones;
  * Fragmento principal que contiene el RecyclerView con los usuarios
  */
 
-public class FragmentUltmasPosiciones extends Fragment{
+//implements OnMapReadyCallback, LocationListener
+public class FragmentUltmasPosiciones extends Fragment  {
     private static final String LOGTAG = "OBTENER MARCADORES";
     /*
         Adaptador del recycler view
@@ -52,18 +55,79 @@ public class FragmentUltmasPosiciones extends Fragment{
     private JsonObjectRequest myjsonObjectRequest;
     private List<UltimasPosiciones> listdatos;//Se le enviará al Adaptador
     private UltimasPosiciones ultimasPosiciones;
-
+    private static String LOGCAT;
     //Variable que le pasamos a la llamada del adaptador. Necesita un listener
     private Adaptador.OnItemClickListener listener;
-    //private Context contexto;
+
+    //Variables para mostrar mapa en fragment
+    //private GoogleMap mapa;
+    //private LatLng localizacion;
+    //private LatLng localizacion;
+    //MapFragment mapFragment;
+    //=============================
+    public FragmentUltmasPosiciones() {//Es conveniente poner el constructor por defecto en los fragments
+    }
+
+    /*@Override
+    public void onMapReady(GoogleMap googleMap) {
+        mapa = googleMap;
+        //localizacion=new LatLng(42.3758,-8.93295);
+        CameraUpdate camUpd1 =
+                CameraUpdateFactory
+                        .newLatLngZoom(new LatLng(40.41, -3.69), 5);
+
+        mapa.moveCamera(camUpd1);
+    }*/
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Context contexto = getActivity();
 
-       // listener= OnItemClickListener;
-        View v = inflater.inflate(R.layout.fragment_ultimas_posiciones, container, false);
+/*
+        MapFragment  mapFragment = (MapFragment) getFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);*/
+
+        /*MapFragment mapFragment = (MapFragment) getChildFragmentManager() .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);*/
+
+       // mapa=new GoogleMap();
+        //mapa.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+
+        // listener= OnItemClickListener;
+        //if (savedInstanceState==null) {
+            View v = inflater.inflate(R.layout.fragment_ultimas_posiciones, container,false);
+
+
+
+
+       //GoogleMap gooleMap;
+       /* Fragment map;
+        map = ((SupportMapFragment) getChildFragmentManager().findFragmentById( R.id.map)).getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+
+            }
+        });*/
+
+
+        /*GoogleMap gooleMap;
+        ((MapFragmentPrueba) getFragmentManager().findFragmentById(R.id.map)).getMapAsync(new OnMapReadyCallback()
+        { @Override public void onMapReady(GoogleMap map)
+        {
+            GoogleMap googleMap = map;
+        }});*/
+
+        //mapa = ((SupportMapFragment) getChildFragmentManager() .findFragmentById(R.id.fragment).getMap();
+
+        /*SupportMapFragment myMapFragment;
+        FragmentManager fm;
+        fm = getChildFragmentManager();
+        myMapFragment = (SupportMapFragment) fm.findFragmentById(R.id.map);*/
+
+
 
         lista = (RecyclerView) v.findViewById(R.id.reciclador);
 
@@ -77,11 +141,13 @@ public class FragmentUltmasPosiciones extends Fragment{
 
         requestQueue = Volley.newRequestQueue(contexto);
         traerUltimasPosiciones();
-
-       //La llamada al adaptador llega vacía. Hay que llamarle desde el método traerUsuarios();
+        //La llamada al adaptador llega vacía. Hay que llamarle desde el método traerUsuarios();
         /*adapter=new Adaptador(listdatos,listener,getContext());
         lista.setAdapter(adapter);*/
         //adapter=new Adaptador(listdatos,this,this);
+
+
+
 
         //return super.onCreateView(inflater, container, savedInstanceState);
         return v;
@@ -116,6 +182,7 @@ public class FragmentUltmasPosiciones extends Fragment{
                         String velocidad = "";
                         String fecha = "";
                         String nombre="";
+                        String telefono="";
 
                         /*  {"Id":"1016","Poblacion":"","Calle":"Lugar Illa de Ons","Numero":" 25","Longitud":"-8.93295",
                 "Latitud":"42.3758","Velocidad":"1.2638043165207","FechaHora":"06-08-2016 12:48:33",
@@ -139,6 +206,7 @@ public class FragmentUltmasPosiciones extends Fragment{
                                     calle = json_array.getJSONObject(z).getString("Calle");
                                     poblacion = json_array.getJSONObject(z).getString("Poblacion");
                                     numero = json_array.getJSONObject(z).getString("Numero");
+                                    telefono = json_array.getJSONObject(z).getString("Telefono");
 
 
                                     ultimasPosiciones=new UltimasPosiciones();
@@ -151,30 +219,103 @@ public class FragmentUltmasPosiciones extends Fragment{
                                     ultimasPosiciones.setNumero(numero);
                                     ultimasPosiciones.setPoblacion(poblacion);
                                     ultimasPosiciones.setVelocidad(velocidad);
+                                    ultimasPosiciones.setTelefono(telefono);
 
                                     listdatos.add(ultimasPosiciones);
                                     Log.d(LOGTAG, "Tamaño listadatos: "+listdatos.size());
 
                                 }
 
+
+
+
                            // }new Adaptador.OnItemClickListener()
 
                         //Al adaptador le pasamos la lista, el listener y el contexto
                         //Le pasamos new Adaptador.OnItemClickListener() para inicializar el listener
-                        adapter=new AdaptadorUltimasPosiciones(listdatos, new AdaptadorUltimasPosiciones.OnItemClickListener() {
-                            @Override
-                            public void onClick(RecyclerView.ViewHolder holder, int idPromocion, View v) {
 
-                                if(v.getId()==R.id.imagenUsuario_ult){
-                                    Toast.makeText(getContext(),"Has pulsado en la imagen",Toast.LENGTH_LONG).show();
-                                }
+                                adapter=new AdaptadorUltimasPosiciones(listdatos, new AdaptadorUltimasPosiciones.OnItemClickListener() {
 
-                               else if(v.getId()==R.id.txtNombre_ult){
-                                    Toast.makeText(getContext(),"Has pulsado en el nombre",Toast.LENGTH_LONG).show();
-                                }
 
-                            }
-                        },getContext());
+                                    @Override
+                                    public void onClick(RecyclerView.ViewHolder holder, int idPromocion, View v) {
+                                        //idPromocion es el id de cada uno de los registros devueltos
+                                        if(v.getId()==R.id.imagenUsuario_ult){
+
+                                                Toast.makeText(getActivity(),"Has pulsado en la imagen",Toast.LENGTH_LONG).show();
+
+
+                                        }
+
+                                       else if(v.getId()==R.id.txtNombre_ult){
+
+                                                Toast.makeText(getActivity(),"Has pulsado en el nombre",Toast.LENGTH_LONG).show();
+
+                                        }
+
+                                        else{
+
+
+                                            //Toast.makeText(getActivity(),"Has pulsado en el cardview",Toast.LENGTH_LONG).show();
+
+                                            /*FragmentManager fragmentManager=getFragmentManager();
+                                            FragmentTransaction transaction=fragmentManager.beginTransaction();
+                                            FragmentUltimasMapa fragmentUltimasMapa=new FragmentUltimasMapa();
+                                            transaction.replace(R.id.map_ultimas,fragmentUltimasMapa);//Si la clase MainFragment importa app.fragment
+                                            //fragmentManager1.beginTransaction().remove(fragmentUltimas);
+                                            transaction.addToBackStack(null);//Puede volver atrás sin cerrar la app.
+                                            transaction.commit();*/
+
+                                            double dlatitud=0;
+                                            double dlongitud = 0;
+                                            int id;
+                                            String nombreusuariomapa = null;
+                                            String telefonousuariomapa=null;
+
+
+                                            id=idPromocion;
+
+                                            Iterator<UltimasPosiciones> it = listdatos.iterator();
+
+
+                                            while(it.hasNext()) {
+
+                                               // Log.d(LOGCAT, "Posiciones del arraylis:  "+it.next());
+
+                                                 ultimasPosiciones = (UltimasPosiciones) it.next();
+                                                //Toast.makeText(getActivity(),"Id de las posiciones  "+ultimasPosiciones.getId(),Toast.LENGTH_SHORT).show();
+                                                //Toast.makeText(getActivity(),"Id de las posiciones  "+ultimasPosiciones.getId(),Toast.LENGTH_SHORT).show();
+                                               if (ultimasPosiciones.getId()==(idPromocion)){
+
+                                                   dlatitud= Double.parseDouble(ultimasPosiciones.getLatitud());
+                                                   dlongitud= Double.parseDouble(ultimasPosiciones.getLongitud());
+                                                   nombreusuariomapa=ultimasPosiciones.getUsername();
+                                                   telefonousuariomapa=ultimasPosiciones.getTelefono();
+                                                   Toast.makeText(getActivity(),"Abriendo mapa de ubicación.",Toast.LENGTH_LONG).show();
+                                                   break;
+                                               }
+
+
+                                            }
+                                            //listdatos.size();
+
+                                            //dlatitud= Double.parseDouble(ultimasPosiciones.getLatitud());
+                                            //dlongitud= Double.parseDouble(ultimasPosiciones.getLongitud());
+
+
+                                            Intent intent=new Intent(getActivity(),MapaUltimasPosiciones.class);
+                                            intent.putExtra("Longitud",dlongitud);
+                                            intent.putExtra("Latitud",dlatitud);
+                                            intent.putExtra("Nombre",nombreusuariomapa);
+                                            intent.putExtra("Telefono",telefonousuariomapa);
+                                            startActivity(intent);
+
+
+                                        }
+
+                                    }
+                                },getActivity());
+
 
                             lista.setAdapter(adapter);
                             /*adapter=new Adaptador(listdatos,listener,getContext());
@@ -184,7 +325,9 @@ public class FragmentUltmasPosiciones extends Fragment{
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Log.d(LOGTAG, "Error Respuesta en JSON: ");
-                            Toast.makeText(getContext(),"Se ha producido un error conectando con el servidor. Inténtalo de nuevo",Toast.LENGTH_LONG).show();
+
+                                Toast.makeText(getActivity(),"Se ha producido un error conectando con el servidor. Inténtalo de nuevo",Toast.LENGTH_LONG).show();
+
                         }
 
                         //priority = Request.Priority.IMMEDIATE;
@@ -197,7 +340,9 @@ public class FragmentUltmasPosiciones extends Fragment{
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d(LOGTAG, "Error Respuesta en JSON: " + error.getMessage());
-                        Toast.makeText(getContext(), "Se ha producido un error conectando al Servidor", Toast.LENGTH_SHORT).show();
+
+                            Toast.makeText(getActivity(), "Se ha producido un error conectando al Servidor", Toast.LENGTH_SHORT).show();
+
 
                     }
                 }
@@ -207,6 +352,7 @@ public class FragmentUltmasPosiciones extends Fragment{
         AppController.getInstance().addToRequestQueue(myjsonObjectRequest, tag_json_obj_actual);
 
     }
+
 
 
 
