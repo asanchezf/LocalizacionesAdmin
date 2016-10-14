@@ -2,6 +2,7 @@ package com.antonioejemplo.localizacionesadmin;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,7 +79,7 @@ public class AdaptadorUltimasPosiciones extends RecyclerView.Adapter<AdaptadorUl
     public UsuariosViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.items_recycleview_ult_posiciones, parent, false);
+                .inflate(R.layout.items_recycleview_ult_posiciones_bis, parent, false);
 
 
         UsuariosViewHolder tvh = new UsuariosViewHolder(itemView);
@@ -121,10 +122,12 @@ public class AdaptadorUltimasPosiciones extends RecyclerView.Adapter<AdaptadorUl
         holder.txtLatitud.setText(items.get(position).getLatitud());
 
         holder.txtLocalizacion.setText(items.get(position).getCalle()+" "+items.get(position).getNumero()+" "+items.get(position).getPoblacion());
-        holder.txtVelocidad.setText(items.get(position).getVelocidad());
+        holder.txtVelocidad.setText(items.get(position).getVelocidad()+ " "+ "Km/h");
         //holder.imagenUsuario.setImageDrawable(R.drawable.brujula_litle);
         holder.imagenUsuario_ult.setImageResource(R.drawable.brujula_litle);
-
+        holder.cardView.setContentPadding(6,6,6,6);
+        holder.cardView.setRadius(10);
+        holder.cardView.setCardElevation(6);
         //dameicono(items.get(position).getImagen());
 
     }
@@ -180,6 +183,8 @@ public class AdaptadorUltimasPosiciones extends RecyclerView.Adapter<AdaptadorUl
         private TextView txtLocalizacion;
         private TextView txtVelocidad;
         private ImageView imagenUsuario_ult;
+        private TextView txtUbicacion;
+        private CardView cardView;
 
         public UsuariosViewHolder(View itemView) {
             super(itemView);
@@ -192,13 +197,14 @@ public class AdaptadorUltimasPosiciones extends RecyclerView.Adapter<AdaptadorUl
             txtVelocidad = (TextView) itemView.findViewById(R.id.Velocidad_ult);
 
             imagenUsuario_ult = (ImageView) itemView.findViewById(R.id.imagenUsuario_ult);
-
+            cardView=(CardView)itemView.findViewById(R.id.carviewUltimasPosiciones);
+            txtUbicacion = (TextView) itemView.findViewById(R.id.txtubicacion);
             //Preparamos el listener y se lo asignamos a los controles que queramos...
-            itemView.setOnClickListener(this);//Para todo el carview completo
+            //itemView.setOnClickListener(this);//Para todo el carview completo
 
-            imagenUsuario_ult.setOnClickListener(this);//para la imagen
-            txtNombre_ult.setOnClickListener(this);//para el nombre
-
+            //imagenUsuario_ult.setOnClickListener(this);//para la imagen
+            //txtNombre_ult.setOnClickListener(this);//para el nombre
+            txtUbicacion.setOnClickListener(this);
 
         }
 

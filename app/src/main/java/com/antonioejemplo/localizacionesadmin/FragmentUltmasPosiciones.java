@@ -4,6 +4,7 @@ package com.antonioejemplo.localizacionesadmin;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,6 +21,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,7 +46,7 @@ import modelos.UltimasPosiciones;
  */
 
 //implements OnMapReadyCallback, LocationListener
-public class FragmentUltmasPosiciones extends Fragment  {
+public class FragmentUltmasPosiciones extends Fragment implements OnMapReadyCallback {
     private static final String LOGTAG = "OBTENER MARCADORES";
     /*
         Adaptador del recycler view
@@ -60,50 +69,62 @@ public class FragmentUltmasPosiciones extends Fragment  {
     private Adaptador.OnItemClickListener listener;
 
     //Variables para mostrar mapa en fragment
-    //private GoogleMap mapa;
-    //private LatLng localizacion;
-    //private LatLng localizacion;
-    //MapFragment mapFragment;
+    private GoogleMap map;
+    private LatLng localizacion;
+
     //=============================
-    public FragmentUltmasPosiciones() {//Es conveniente poner el constructor por defecto en los fragments
+    public FragmentUltmasPosiciones() {//Es obligatorio poner el constructor por defecto para evitar errores
+
     }
 
-    /*@Override
-    public void onMapReady(GoogleMap googleMap) {
-        mapa = googleMap;
-        //localizacion=new LatLng(42.3758,-8.93295);
-        CameraUpdate camUpd1 =
-                CameraUpdateFactory
-                        .newLatLngZoom(new LatLng(40.41, -3.69), 5);
 
-        mapa.moveCamera(camUpd1);
-    }*/
+    public static FragmentUltmasPosiciones newInstance() {//Constructor stático para poder instanciar desde otra clase....
+        return new FragmentUltmasPosiciones();
+    }
 
+
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+
+        initilizeMap();
+
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+
         Context contexto = getActivity();
 
-/*
-        MapFragment  mapFragment = (MapFragment) getFragmentManager()
-                .findFragmentById(R.id.map);
+       /* View v=null;
+        if (v == null) {
+
+            v = inflater.inflate(R.layout.fragment_ultimas_posiciones, container, false);
+        }*/
+
+
+
+
+
+                View v = inflater.inflate(R.layout.fragment_ultimas_posiciones, container, false);
+
+                initilizeMap();
+
+        /*MapFragment mapFragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.mapcompartido);
         mapFragment.getMapAsync(this);*/
 
-        /*MapFragment mapFragment = (MapFragment) getChildFragmentManager() .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);*/
 
-       // mapa=new GoogleMap();
-        //mapa.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-
-        // listener= OnItemClickListener;
-        //if (savedInstanceState==null) {
-            View v = inflater.inflate(R.layout.fragment_ultimas_posiciones, container,false);
+//POnemos el escuchador del mapa
+        /*MapFragment MapFragment = (MapFragment) getFragmentManager()
+                .findFragmentById(R.id.mapcompartido);
+        MapFragment.getMapAsync(this);*/
 
 
-
-
-       //GoogleMap gooleMap;
+                //GoogleMap gooleMap;
        /* Fragment map;
         map = ((SupportMapFragment) getChildFragmentManager().findFragmentById( R.id.map)).getMapAsync(new OnMapReadyCallback() {
             @Override
@@ -114,13 +135,13 @@ public class FragmentUltmasPosiciones extends Fragment  {
 
 
         /*GoogleMap gooleMap;
-        ((MapFragmentPrueba) getFragmentManager().findFragmentById(R.id.map)).getMapAsync(new OnMapReadyCallback()
+        ((HomeFragment) getFragmentManager().findFragmentById(R.id.map)).getMapAsync(new OnMapReadyCallback()
         { @Override public void onMapReady(GoogleMap map)
         {
             GoogleMap googleMap = map;
         }});*/
 
-        //mapa = ((SupportMapFragment) getChildFragmentManager() .findFragmentById(R.id.fragment).getMap();
+                //mapa = ((SupportMapFragment) getChildFragmentManager() .findFragmentById(R.id.fragment).getMap();
 
         /*SupportMapFragment myMapFragment;
         FragmentManager fm;
@@ -128,76 +149,100 @@ public class FragmentUltmasPosiciones extends Fragment  {
         myMapFragment = (SupportMapFragment) fm.findFragmentById(R.id.map);*/
 
 
+                lista = (RecyclerView) v.findViewById(R.id.reciclador);
 
-        lista = (RecyclerView) v.findViewById(R.id.reciclador);
+                //lista.setHasFixedSize(true);
 
-        //lista.setHasFixedSize(true);
+                // Usar un administrador para LinearLayout
+                lManager = new LinearLayoutManager(contexto);
+                //lista.setLayoutManager(lManager);
+                lista.setLayoutManager(
+                        new LinearLayoutManager(contexto, LinearLayoutManager.VERTICAL, false));
 
-        // Usar un administrador para LinearLayout
-        lManager = new LinearLayoutManager(contexto);
-        //lista.setLayoutManager(lManager);
-        lista.setLayoutManager(
-                new LinearLayoutManager(contexto, LinearLayoutManager.VERTICAL, false));
+                requestQueue = Volley.newRequestQueue(contexto);
+                traerUltimasPosiciones();
 
-        requestQueue = Volley.newRequestQueue(contexto);
-        traerUltimasPosiciones();
-        //La llamada al adaptador llega vacía. Hay que llamarle desde el método traerUsuarios();
-        /*adapter=new Adaptador(listdatos,listener,getContext());
-        lista.setAdapter(adapter);*/
-        //adapter=new Adaptador(listdatos,this,this);
-
+                //return super.onCreateView(inflater, container, savedInstanceState);
+                return v;
+            }
 
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        initilizeMap();
 
-        //return super.onCreateView(inflater, container, savedInstanceState);
-        return v;
     }
 
-    private void traerUltimasPosiciones() {
+        private void initilizeMap () {
 
-        String tag_json_obj_actual = "json_obj_req_actual";
-        //http://petty.hol.es/obtener_localizaciones.php
-        String patronUrl = "http://petty.hol.es/obtener_localizaciones.php";
-        String uri = String.format(patronUrl);
+                if (map == null) {
+                    //map = ((MapFragment) getActivity().getFragmentManager().findFragmentById(R.id.mapcompartido)).getMap();
 
-        listdatos= new ArrayList<UltimasPosiciones>();
+               /* MapFragment mapFragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.mapcompartido);
+                mapFragment.getMapAsync(this);*/
 
-        Log.v(LOGTAG, "Ha llegado a immediateRequestTiempoActual. Uri: " + uri);
+                    //ES OBLIGATORIO CONTROLAR LA VERSIÓN PORQUE EN KIT-KAT DABA ERROR AL CARGAR EL MAPA
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        MapFragment mapFragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.mapcompartido);
+                        mapFragment.getMapAsync(this);
+                    } else {
+                        MapFragment mapFragment = ((MapFragment) getFragmentManager().findFragmentById(R.id.mapcompartido));
+                        mapFragment.getMapAsync(this);
+                    }
 
-        myjsonObjectRequest = new MyJSonRequestImmediate(
-                Request.Method.GET,
-                uri,
 
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response2) {
+                }
 
-                        //String id = "";
-                        int id;
-                        String poblacion = "";
-                        String calle = "";
-                        String numero = "";
-                        String longitud = "";
-                        String latitud = "";
-                        String velocidad = "";
-                        String fecha = "";
-                        String nombre="";
-                        String telefono="";
+        }
 
+        private void traerUltimasPosiciones () {
+
+            String tag_json_obj_actual = "json_obj_req_actual";
+            //http://petty.hol.es/obtener_localizaciones.php
+            String patronUrl = "http://petty.hol.es/obtener_localizaciones.php";
+            String uri = String.format(patronUrl);
+
+            listdatos = new ArrayList<UltimasPosiciones>();
+
+            Log.v(LOGTAG, "Ha llegado a immediateRequestTiempoActual. Uri: " + uri);
+
+            myjsonObjectRequest = new MyJSonRequestImmediate(
+                    Request.Method.GET,
+                    uri,
+
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response2) {
+
+                            //String id = "";
+                            int id;
+                            String poblacion = "";
+                            String calle = "";
+                            String numero = "";
+                            String longitud = "";
+                            String latitud = "";
+                            String velocidad = "";
+                            String fecha = "";
+                            String nombre = "";
+                            String telefono = "";
+                            double sulatitud = 0;//Para mostrar los marcadores en el mapa pequeño
+                            double sulongitud = 0;//Para mostrar los marcadores en el mapa pequeño
+                            int suVelocidad = 0;//Para convertir la velocidad a Km/h
                         /*  {"Id":"1016","Poblacion":"","Calle":"Lugar Illa de Ons","Numero":" 25","Longitud":"-8.93295",
                 "Latitud":"42.3758","Velocidad":"1.2638043165207","FechaHora":"06-08-2016 12:48:33",
                 "Telefono":"659355808","Email":"antoniom.sanchezf@gmail.com","Username":"Antonio"}*/
 
-                        try {
+                            try {
 
-                            //for (int i = 0; i < response2.length(); i++) {
+                                //for (int i = 0; i < response2.length(); i++) {
                                 //JSONObject json_estado = response2.getJSONObject("estado");
                                 String resultJSON = response2.getString("estado");
 
                                 JSONArray json_array = response2.getJSONArray("alumnos");
                                 for (int z = 0; z < json_array.length(); z++) {
                                     //OJO: se ha cambiado a int. Antes era un String
-                                    id= json_array.getJSONObject(z).getInt("Id");
+                                    id = json_array.getJSONObject(z).getInt("Id");
                                     nombre = json_array.getJSONObject(z).getString("Username");
                                     fecha = json_array.getJSONObject(z).getString("FechaHora");
                                     velocidad = json_array.getJSONObject(z).getString("Velocidad");
@@ -208,8 +253,16 @@ public class FragmentUltmasPosiciones extends Fragment  {
                                     numero = json_array.getJSONObject(z).getString("Numero");
                                     telefono = json_array.getJSONObject(z).getString("Telefono");
 
+                                    //Hacemos una coversión de la velocidad de string a double y llamamos a conversionVelocidad
+                                    //para que pase el valor de millas/hora a Km/hora
 
-                                    ultimasPosiciones=new UltimasPosiciones();
+                                    //suVelocidad= Double.parseDouble(String.valueOf(velocidad));
+                                    //suVelocidad = (int) conversionVelocidad((int) json_array.getJSONObject(z).getDouble("Velocidad"));
+
+                                    //Hacemos casting a int para que no traiga tantos decimales
+                                    suVelocidad = (int) conversionVelocidad(json_array.getJSONObject(z).getDouble("Velocidad"));
+
+                                    ultimasPosiciones = new UltimasPosiciones();
                                     ultimasPosiciones.setId(id);
                                     ultimasPosiciones.setUsername(nombre);
                                     ultimasPosiciones.setCalle(calle);
@@ -218,142 +271,192 @@ public class FragmentUltmasPosiciones extends Fragment  {
                                     ultimasPosiciones.setLongitud(longitud);
                                     ultimasPosiciones.setNumero(numero);
                                     ultimasPosiciones.setPoblacion(poblacion);
-                                    ultimasPosiciones.setVelocidad(velocidad);
+                                    //ultimasPosiciones.setVelocidad(velocidad);
+                                    ultimasPosiciones.setVelocidad(String.valueOf(suVelocidad));
                                     ultimasPosiciones.setTelefono(telefono);
 
                                     listdatos.add(ultimasPosiciones);
-                                    Log.d(LOGTAG, "Tamaño listadatos: "+listdatos.size());
+                                    Log.d(LOGTAG, "Tamaño listadatos: " + listdatos.size());
+
+                                    sulatitud = Double.parseDouble(latitud);
+                                    sulongitud = Double.parseDouble(longitud);
+
+                                    localizacion = new LatLng(sulatitud, sulongitud);
+
+                                    //Dibuja los marcadores según las posiciones recogidas
+                                    pintarMarcadores(localizacion, nombre);
+
 
                                 }
 
 
+                                // }new Adaptador.OnItemClickListener()
 
+                                //Al adaptador le pasamos la lista, el listener y el contexto
+                                //Le pasamos new Adaptador.OnItemClickListener() para inicializar el listener
 
-                           // }new Adaptador.OnItemClickListener()
-
-                        //Al adaptador le pasamos la lista, el listener y el contexto
-                        //Le pasamos new Adaptador.OnItemClickListener() para inicializar el listener
-
-                                adapter=new AdaptadorUltimasPosiciones(listdatos, new AdaptadorUltimasPosiciones.OnItemClickListener() {
+                                adapter = new AdaptadorUltimasPosiciones(listdatos, new AdaptadorUltimasPosiciones.OnItemClickListener() {
 
 
                                     @Override
                                     public void onClick(RecyclerView.ViewHolder holder, int idPromocion, View v) {
                                         //idPromocion es el id de cada uno de los registros devueltos
-                                        if(v.getId()==R.id.imagenUsuario_ult){
+                                        if (v.getId() == R.id.imagenUsuario_ult) {
 
-                                                Toast.makeText(getActivity(),"Has pulsado en la imagen",Toast.LENGTH_LONG).show();
-
-
-                                        }
-
-                                       else if(v.getId()==R.id.txtNombre_ult){
-
-                                                Toast.makeText(getActivity(),"Has pulsado en el nombre",Toast.LENGTH_LONG).show();
-
-                                        }
-
-                                        else{
+                                            Toast.makeText(getActivity(), "Has pulsado en la imagen", Toast.LENGTH_LONG).show();
 
 
-                                            //Toast.makeText(getActivity(),"Has pulsado en el cardview",Toast.LENGTH_LONG).show();
+                                        } else if (v.getId() == R.id.txtNombre_ult) {
 
-                                            /*FragmentManager fragmentManager=getFragmentManager();
-                                            FragmentTransaction transaction=fragmentManager.beginTransaction();
-                                            FragmentUltimasMapa fragmentUltimasMapa=new FragmentUltimasMapa();
-                                            transaction.replace(R.id.map_ultimas,fragmentUltimasMapa);//Si la clase MainFragment importa app.fragment
-                                            //fragmentManager1.beginTransaction().remove(fragmentUltimas);
-                                            transaction.addToBackStack(null);//Puede volver atrás sin cerrar la app.
-                                            transaction.commit();*/
+                                            Toast.makeText(getActivity(), "Has pulsado en el nombre", Toast.LENGTH_LONG).show();
 
-                                            double dlatitud=0;
-                                            double dlongitud = 0;
-                                            int id;
-                                            String nombreusuariomapa = null;
-                                            String telefonousuariomapa=null;
+                                        } else if (v.getId() == R.id.txtubicacion) {
+
+                                            Toast.makeText(getActivity(), "Has pulsado en  contactar", Toast.LENGTH_LONG).show();
+                                            verMapaULtimasPosiciones(idPromocion);
+                                        } else {
 
 
-                                            id=idPromocion;
-
-                                            Iterator<UltimasPosiciones> it = listdatos.iterator();
-
-
-                                            while(it.hasNext()) {
-
-                                               // Log.d(LOGCAT, "Posiciones del arraylis:  "+it.next());
-
-                                                 ultimasPosiciones = (UltimasPosiciones) it.next();
-                                                //Toast.makeText(getActivity(),"Id de las posiciones  "+ultimasPosiciones.getId(),Toast.LENGTH_SHORT).show();
-                                                //Toast.makeText(getActivity(),"Id de las posiciones  "+ultimasPosiciones.getId(),Toast.LENGTH_SHORT).show();
-                                               if (ultimasPosiciones.getId()==(idPromocion)){
-
-                                                   dlatitud= Double.parseDouble(ultimasPosiciones.getLatitud());
-                                                   dlongitud= Double.parseDouble(ultimasPosiciones.getLongitud());
-                                                   nombreusuariomapa=ultimasPosiciones.getUsername();
-                                                   telefonousuariomapa=ultimasPosiciones.getTelefono();
-                                                   Toast.makeText(getActivity(),"Abriendo mapa de ubicación.",Toast.LENGTH_LONG).show();
-                                                   break;
-                                               }
-
-
-                                            }
-                                            //listdatos.size();
-
-                                            //dlatitud= Double.parseDouble(ultimasPosiciones.getLatitud());
-                                            //dlongitud= Double.parseDouble(ultimasPosiciones.getLongitud());
-
-
-                                            Intent intent=new Intent(getActivity(),MapaUltimasPosiciones.class);
-                                            intent.putExtra("Longitud",dlongitud);
-                                            intent.putExtra("Latitud",dlatitud);
-                                            intent.putExtra("Nombre",nombreusuariomapa);
-                                            intent.putExtra("Telefono",telefonousuariomapa);
-                                            startActivity(intent);
-
-
+                                            verMapaULtimasPosiciones(idPromocion);
                                         }
 
                                     }
-                                },getActivity());
+                                }, getActivity());
 
 
-                            lista.setAdapter(adapter);
+                                lista.setAdapter(adapter);
                             /*adapter=new Adaptador(listdatos,listener,getContext());
                             lista.setAdapter(adapter);*/
 
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Log.d(LOGTAG, "Error Respuesta en JSON: ");
+                                //map.moveCamera(CameraUpdateFactory.newLatLngZoom(localizacion, 10));
 
-                                Toast.makeText(getActivity(),"Se ha producido un error conectando con el servidor. Inténtalo de nuevo",Toast.LENGTH_LONG).show();
 
-                        }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                Log.d(LOGTAG, "Error Respuesta en JSON: ");
 
-                        //priority = Request.Priority.IMMEDIATE;
+                                Toast.makeText(getActivity(), "Se ha producido un error conectando con el servidor. Inténtalo de nuevo", Toast.LENGTH_LONG).show();
 
-                    }//fin onresponse
+                            }
 
-                },
+                            //priority = Request.Priority.IMMEDIATE;
 
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d(LOGTAG, "Error Respuesta en JSON: " + error.getMessage());
+                        }//fin onresponse
+
+                    },
+
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.d(LOGTAG, "Error Respuesta en JSON: " + error.getMessage());
 
                             Toast.makeText(getActivity(), "Se ha producido un error conectando al Servidor", Toast.LENGTH_SHORT).show();
 
 
+                        }
                     }
-                }
-        ) ;
+            );
 
-        // Añadir petición a la cola
-        AppController.getInstance().addToRequestQueue(myjsonObjectRequest, tag_json_obj_actual);
+            // Añadir petición a la cola
+            AppController.getInstance().addToRequestQueue(myjsonObjectRequest, tag_json_obj_actual);
+
+        }
+
+        private double conversionVelocidad ( double speed){
+            //Convierte la velocidad de Millas/h a KM/h
+
+            double speedConvertida = (speed / 1000) * 3600;
+
+            return speedConvertida;
+        }
+
+        private void verMapaULtimasPosiciones ( int idPromocion){
+
+
+            double dlatitud = 0;
+            double dlongitud = 0;
+            int id;
+            String nombreusuariomapa = null;
+            String telefonousuariomapa = null;
+
+
+            id = idPromocion;
+
+            Iterator<UltimasPosiciones> it = listdatos.iterator();
+
+
+            while (it.hasNext()) {
+
+                // Log.d(LOGCAT, "Posiciones del arraylis:  "+it.next());
+
+                ultimasPosiciones = (UltimasPosiciones) it.next();
+                //Toast.makeText(getActivity(),"Id de las posiciones  "+ultimasPosiciones.getId(),Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(),"Id de las posiciones  "+ultimasPosiciones.getId(),Toast.LENGTH_SHORT).show();
+                if (ultimasPosiciones.getId() == (idPromocion)) {
+
+                    dlatitud = Double.parseDouble(ultimasPosiciones.getLatitud());
+                    dlongitud = Double.parseDouble(ultimasPosiciones.getLongitud());
+                    nombreusuariomapa = ultimasPosiciones.getUsername();
+                    telefonousuariomapa = ultimasPosiciones.getTelefono();
+                    Toast.makeText(getActivity(), "Abriendo mapa de ubicación.", Toast.LENGTH_LONG).show();
+                    break;
+                }
+
+
+            }
+            //listdatos.size();
+
+            //dlatitud= Double.parseDouble(ultimasPosiciones.getLatitud());
+            //dlongitud= Double.parseDouble(ultimasPosiciones.getLongitud());
+
+
+            Intent intent = new Intent(getActivity(), MapaUltimasPosiciones.class);
+            intent.putExtra("Longitud", dlongitud);
+            intent.putExtra("Latitud", dlatitud);
+            intent.putExtra("Nombre", nombreusuariomapa);
+            intent.putExtra("Telefono", telefonousuariomapa);
+            startActivity(intent);
+
+        }
+
+        private void pintarMarcadores (LatLng localizacion, String nombre){
+            //Dibuja los marcadores según las posiciones recogidas
+            MarkerOptions markerOptions =
+                    new MarkerOptions()
+                            //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.placeholder_green))
+                            .anchor(0.0f, 1.0f)
+                            .title(nombre)
+                            //.snippet("Día: " + fechaHora + " - Teléf: " + telefonomarcador)
+                            .draggable(true)
+                            .position(localizacion)
+                            .flat(true);
+
+            Marker marker = map.addMarker(markerOptions);
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(localizacion, 10));
+        }
+
+
+        @Override
+        public void onMapReady (GoogleMap googleMap){
+            map = googleMap;
+            map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+            map.getUiSettings().setZoomControlsEnabled(true);//Botones de zomm
+            map.getUiSettings().setMapToolbarEnabled(false);//Deshabilitamos los iconos con accesos a googlemaps porque la app no necesita ubicación.
+
+        }
+
+
+        @Override
+        public void onDestroyView () {
+            super.onDestroyView();
+
+            MapFragment f = (MapFragment) getFragmentManager().findFragmentById(R.id.mapcompartido);
+            if (f != null) getFragmentManager().beginTransaction().remove(f).commit();
+
+
+        }
+
 
     }
-
-
-
-
-}

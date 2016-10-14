@@ -57,6 +57,10 @@ public class FragmentTodasPosiciones extends Fragment{
     private Adaptador.OnItemClickListener listener;
     //private Context contexto;
 
+
+    public FragmentTodasPosiciones() {
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -87,6 +91,13 @@ public class FragmentTodasPosiciones extends Fragment{
         return v;
     }
 
+    private double conversionVelocidad(double speed) {
+        //Convierte la velocidad de Millas/h a KM/h
+
+        double speedConvertida = (speed / 1000) * 3600;
+
+        return speedConvertida;
+    }
     private void traerTodasPosiciones() {
 
         String tag_json_obj_actual = "json_obj_req_actual";
@@ -116,6 +127,7 @@ public class FragmentTodasPosiciones extends Fragment{
                         String velocidad = "";
                         String fecha = "";
                         String nombre="";
+                        int suVelocidad = 0;//Para convertir la velocidad a Km/h
 
                         /*  {"Id":"10","Id_Usuario":"10","Poblacion":"M\u00f3stoles","Calle":"Calle Rubens",
                         "Numero":" 12","Longitud":"-3.87124","Latitud":"40.3294","Velocidad":"0.37042078375816",
@@ -135,7 +147,11 @@ public class FragmentTodasPosiciones extends Fragment{
                                     id= json_array.getJSONObject(z).getInt("Id");
                                     nombre = json_array.getJSONObject(z).getString("Username");
                                     fecha = json_array.getJSONObject(z).getString("FechaHora");
-                                    velocidad = json_array.getJSONObject(z).getString("Velocidad");
+
+                                    //velocidad = json_array.getJSONObject(z).getString("Velocidad");
+
+                                    //Hacemos casting a int para que no traiga tantos decimales
+                                    suVelocidad = (int) conversionVelocidad(json_array.getJSONObject(z).getDouble("Velocidad"));
                                     latitud = json_array.getJSONObject(z).getString("Latitud");
                                     longitud = json_array.getJSONObject(z).getString("Longitud");
                                     calle = json_array.getJSONObject(z).getString("Calle");
@@ -152,7 +168,7 @@ public class FragmentTodasPosiciones extends Fragment{
                                     todasLasPosiciones.setLongitud(longitud);
                                     todasLasPosiciones.setNumero(numero);
                                     todasLasPosiciones.setPoblacion(poblacion);
-                                    todasLasPosiciones.setVelocidad(velocidad);
+                                    todasLasPosiciones.setVelocidad(String.valueOf(suVelocidad));
 
                                     listdatos.add(todasLasPosiciones);
                                     Log.d(LOGTAG, "Tamaño listadatos: "+listdatos.size());

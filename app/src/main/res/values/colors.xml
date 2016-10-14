@@ -13,6 +13,7 @@
 
     <color name="list_pressed_long">#2196f3</color>
 
+    <color name="transparente">#00000000</color>
 
     <array name="reds">
         <item>@color/md_red_500</item>

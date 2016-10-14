@@ -73,7 +73,7 @@
             android:theme="@style/TextLabel">
 
             <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/id"
+                android:id="@+id/idUsuario"
                 android:layout_width="@dimen/abc_search_view_preferred_width"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"

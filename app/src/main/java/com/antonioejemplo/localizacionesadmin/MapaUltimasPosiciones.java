@@ -11,7 +11,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -51,12 +53,11 @@ public class MapaUltimasPosiciones extends AppCompatActivity implements OnMapRea
         map.getUiSettings().setMapToolbarEnabled(false);//Deshabilitamos los iconos con accesos a googlemaps porque la app no necesita ubicación.
         map.setOnMarkerDragListener(this);//Se implementan los tres métodos de la interfaz...
 
-        /*Marker posicion = map.addMarker(new MarkerOptions() .position(localizacion) .title("localizacion") .snippet("Kiel is cool") .icon(BitmapDescriptorFactory.fromResource(R.drawable.brujula_opt)));
-        // Move the camera instantly to hamburg with a zoom of 15.
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(localizacion, 15));
-        // Zoom in, animating the camera.
-        map.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);*/
-
+        //Aplicamos el estilo personalizado de mapa. Se añade el fichero generado desde la web en el directorio raw
+        //https://mapstyle.withgoogle.com/
+        map.setMapStyle(
+                MapStyleOptions.loadRawResourceStyle(
+                        this, R.raw.mapa));
 
         pintarMarcador();
 
@@ -66,9 +67,9 @@ public class MapaUltimasPosiciones extends AppCompatActivity implements OnMapRea
 
     private void pintarMarcador() {
         map.addMarker(new MarkerOptions()
-                //.icon(BitmapDescriptorFactory.fromResource(R.drawable.icono_ubicacion))//Icono por defecto
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.placeholder))//Icono por defecto
                 //.anchor(0.0f, 1.0f)
-                .title(nombreusuario)
+                .title("Arrastra el marcador para enviar un wsp a "+nombreusuario)
                 .draggable(true)//Para poder arrastrar el marcador
                 //.snippet(calle + " " + numero + ">" + fechaHora + ">" + velocidad)
                 .position(localizacion));

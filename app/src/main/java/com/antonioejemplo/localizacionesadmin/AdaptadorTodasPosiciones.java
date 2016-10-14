@@ -117,7 +117,8 @@ public class AdaptadorTodasPosiciones extends RecyclerView.Adapter<AdaptadorToda
         holder.txtLatitud.setText(items.get(position).getLatitud());
 
         holder.txtLocalizacion.setText(items.get(position).getCalle()+" "+items.get(position).getNumero()+" "+items.get(position).getPoblacion());
-        holder.txtVelocidad.setText(items.get(position).getVelocidad());
+        //holder.txtVelocidad.setText(items.get(position).getVelocidad());
+        holder.txtVelocidad.setText(items.get(position).getVelocidad()+ " "+ "Km/h");
         //holder.imagenUsuario.setImageDrawable(R.drawable.brujula_litle);
         holder.imagenUsuario_todas.setImageResource(R.drawable.brujula_litle);
 

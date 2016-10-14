@@ -18,23 +18,23 @@ import android.widget.TextView;
 
 public class AltaUsuarios extends AppCompatActivity {
 
-    private EditText id;
+    private EditText idUsuario;
     private EditText nombre;
     private EditText password;
     private EditText email;
     private EditText id_Android;
     private EditText telefono;
-    private TextView alta;
+    private EditText alta;
     private EditText observaciones;
 
 
-    private boolean validar = true;
+    //private boolean validar = true;
 
     private Toolbar toolbar;
 
     // Modo del formulario
     private int modo;
-    private int id_recogido;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,24 +50,36 @@ public class AltaUsuarios extends AppCompatActivity {
         final int colorPrimaryDark = typedValueColorPrimaryDark.data;
         if (Build.VERSION.SDK_INT >= 21) {
             getWindow().setStatusBarColor(colorPrimaryDark);
-           // getWindow().setTitleColor(getResources().getColor(R.color.md_white_1000_75));
+            // getWindow().setTitleColor(getResources().getColor(R.color.md_white_1000_75));
             //getWindow().setTitleColor(getResources().getColor(R.color.md_white_1000_75));
 
         }
 
 
-
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        id = (EditText) findViewById(R.id.id);
+        idUsuario = (EditText) findViewById(R.id.idUsuario);
         nombre = (EditText) findViewById(R.id.nombre);
-        id_Android=(EditText)findViewById(R.id.id_Android);
+        id_Android = (EditText) findViewById(R.id.id_Android);
         password = (EditText) findViewById(R.id.password);
         email = (EditText) findViewById(R.id.email);
-        id= (EditText) findViewById(R.id.id);
         telefono = (EditText) findViewById(R.id.telefono);
-        alta = (TextView) findViewById(R.id.alta);
+        alta = (EditText) findViewById(R.id.alta);
         observaciones = (EditText) findViewById(R.id.observaciones);
+
+
+        Bundle bundle = getIntent().getExtras();
+//Se recoge un entero y al Editext hay que pasarle un string en el método setText. Es necesario el String.valueof para que no dé error.
+        String idrecogido = String.valueOf(bundle.getInt("Id"));
+
+        idUsuario.setText(idrecogido);
+        nombre.setText(bundle.getString("Nombre"));
+        id_Android.setText(bundle.getString("ID_Android"));
+        telefono.setText(bundle.getString("Telefono"));
+        email.setText(bundle.getString("Email"));
+        password.setText(bundle.getString("Password"));
+        alta.setText(bundle.getString("FechaAlta"));
+
 
 
 /*
@@ -106,15 +118,13 @@ public class AltaUsuarios extends AppCompatActivity {
                 observaciones.setFilters(fArray);
 
                 //Restamos sobre 200 que es el maxlength de observaciones
-                int resta=maxLength-s.length();
-                String tamano=String.valueOf(resta);
+                int resta = maxLength - s.length();
+                String tamano = String.valueOf(resta);
                 contador.setText(tamano);
-
 
 
             }
         });
-
 
 
     }
@@ -169,7 +179,6 @@ public class AltaUsuarios extends AppCompatActivity {
         }
 
 
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -183,7 +192,7 @@ public class AltaUsuarios extends AppCompatActivity {
             // this.setTitle(R.string.hipoteca_crear_titulo);
             this.setEdicion(true);
         } else if (modo == FragmentUsuarios.C_EDITAR) {
-           // this.setTitle(R.string.agenda_editar_titulo);
+            // this.setTitle(R.string.agenda_editar_titulo);
             this.setEdicion(true);
         }
     }

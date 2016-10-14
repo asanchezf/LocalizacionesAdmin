@@ -1,10 +1,12 @@
 package com.antonioejemplo.localizacionesadmin;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -113,8 +115,13 @@ public class Adaptador extends RecyclerView.Adapter<Adaptador.UsuariosViewHolder
 
         //holder.imagenUsuario.setImageDrawable(R.drawable.brujula_litle);
         holder.imagenUsuario.setImageResource(R.drawable.brujula_litle);
+        //holder.imagenllamada.setImageResource(R.drawable.llamada_black);
 
         //dameicono(items.get(position).getImagen());
+        holder.cardView.setRadius(10);
+        holder.cardView.setCardElevation(6);//Parece que no se aprecia
+        holder.cardView.setContentPadding(6,6,6,6);
+
 
     }
 
@@ -167,7 +174,9 @@ public class Adaptador extends RecyclerView.Adapter<Adaptador.UsuariosViewHolder
         private TextView txtEmail;
         private TextView txtfechaalta;
         private ImageView imagenUsuario;
-
+        private CardView cardView;
+        //private ImageView imagenllamada;
+        private Button btnLlamar;
 
         public UsuariosViewHolder(View itemView) {
             super(itemView);
@@ -177,13 +186,18 @@ public class Adaptador extends RecyclerView.Adapter<Adaptador.UsuariosViewHolder
             txtEmail = (TextView) itemView.findViewById(R.id.txtEmail);
             txtfechaalta = (TextView) itemView.findViewById(R.id.fechaAlta);
             imagenUsuario = (ImageView) itemView.findViewById(R.id.imagenUsuario);
+            cardView=(CardView)itemView.findViewById(R.id.tarjeta);
+            btnLlamar=(Button) itemView.findViewById(R.id.btncontactar);
+
+          //  imagenllamada = (ImageView) itemView.findViewById(R.id.imgllamada);
 
             //Preparamos el listener y se lo asignamos a los controles que queramos...
             itemView.setOnClickListener(this);
 
-            imagenUsuario.setOnClickListener(this);
-            txtNombre.setOnClickListener(this);
-
+            //imagenUsuario.setOnClickListener(this);
+            //txtNombre.setOnClickListener(this);
+            //imagenllamada.setOnClickListener(this);
+            btnLlamar.setOnClickListener(this);
 
         }
 

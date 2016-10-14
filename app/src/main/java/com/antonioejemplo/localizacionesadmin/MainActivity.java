@@ -1,7 +1,11 @@
 package com.antonioejemplo.localizacionesadmin;
 
+import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -12,27 +16,32 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
 
     private MainFragment mainFragment;
     private FragmentUsuarios fragmentUsuario;
     private FragmentUltmasPosiciones fragmentUltimas;
     private FragmentTodasPosiciones fragmentTodasPosiciones;
+    AlertDialog alert = null;
+    private DrawerLayout drawer;
+    private ActionBarDrawerToggle toggle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //getSupportActionBar().setTitle("Administración");
 
         //SE DECLARAN LOS FRAGMENTS
-        mainFragment=new MainFragment();
+        mainFragment = new MainFragment();
         fragmentUsuario = new FragmentUsuarios();
-        fragmentUltimas=new FragmentUltmasPosiciones();
+        fragmentUltimas = new FragmentUltmasPosiciones();
         fragmentTodasPosiciones = new FragmentTodasPosiciones();
 
 
@@ -45,15 +54,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });*/
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener( this);
+        navigationView.setNavigationItemSelectedListener(this);
 
         //Fragmento de inicio
         setFragment(0);
@@ -99,42 +108,50 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 fragmentManager = getSupportFragmentManager();
                 fragmentTransaction = fragmentManager.beginTransaction();
                 FragmentUsuarios fragmentUsuario = new FragmentUsuarios();
-                fragmentTransaction.replace(R.id.fragment, fragmentUsuario);//Si la clase MainFragment importa android.support.v4.app.Fragment
+                fragmentTransaction.replace(R.id.fragment, fragmentUsuario, "usuarios_tag");//Si la clase MainFragment importa android.support.v4.app.Fragment
+                //fragmentTransaction.addToBackStack(null);//Botón BackStack
+                //getSupportActionBar().setTitle("Usuarios");
                 fragmentTransaction.commit();
 
                 break;
-
             case 2:
+                //ULTIMAS POSICIONES
+                //FragmentUltmasPosiciones fragmentUltimas = FragmentUltmasPosiciones.newInstance();
+                FragmentUltmasPosiciones fragmentUltimas =new FragmentUltmasPosiciones();
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.fragment, fragmentUltimas);
+                //ft.addToBackStack(null);//Botón BackStack
+                //getSupportActionBar().setTitle("Últimas posiciones");
+                ft.commit();
+                // Registrar escucha onMapReadyCallback
+                //fragmentUltimas.getMapAsync(this);
 
-                    /*fragmentManager = getSupportFragmentManager();
-                    fragmentTransaction = fragmentManager.beginTransaction();
-                    FragmentUltmasPosiciones fragmentUltimas = new FragmentUltmasPosiciones();//importa android.support.v4.app.Fragment
-                    fragmentTransaction.replace(R.id.fragment, fragmentUltimas);
-                    fragmentTransaction.commit();*/
-
-
-                FragmentManager fragmentManager2=getFragmentManager();
-                FragmentTransaction transaction2=fragmentManager2.beginTransaction();
-                //FragmentTransaction transaction2=getChildFragmentManager().beginTransaction();
-
-                FragmentUltmasPosiciones fragmentUltimas=new FragmentUltmasPosiciones();
-
-                if(fragmentUltimas==null||!fragmentUltimas.isVisible()) {
-                    //transaction2.add(R.id.fragment,fragmentUltimas);//Si la clase FragmentUltmasPosiciones importa app.fragment
-                    transaction2.replace(R.id.fragment, fragmentUltimas);
-                    //transaction2.addToBackStack(null);
-                    transaction2.commit();
-                }
-
-                    break;
-
+                break;
 
             case 3:
+                //TODAS LAS POSICIONES
                 fragmentManager = getSupportFragmentManager();
                 fragmentTransaction = fragmentManager.beginTransaction();
                 FragmentTodasPosiciones fragmentTodasPosiciones = new FragmentTodasPosiciones();
                 fragmentTransaction.replace(R.id.fragment, fragmentTodasPosiciones);
+                getSupportActionBar().setTitle("Todas las posiciones");
+                //fragmentTransaction.addToBackStack(null);
+
                 fragmentTransaction.commit();
+                break;
+
+
+
+
+
+            case 4:
+                //Mapa todas las posiciones
+                Intent intent=new Intent(MainActivity.this,MapaTodas.class);
+                startActivity(intent);
+
+
+
+
                 break;
 
         }
@@ -143,11 +160,58 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        }else {
+                salidaControlada();
+            }
+
+
+            //super.onBackPressed();
+            //salidaControlada();
+            //setFragment(0);
+            //super.onBackPressed();
+
+        /*if(drawer.isDrawerOpen(Gravity.LEFT)){
+            drawer.closeDrawer(Gravity.LEFT);
+        }else if(!drawer.isDrawerVisible(Gravity.LEFT)&& !drawer.isDrawerOpen(Gravity.LEFT)){
             super.onBackPressed();
+            salidaControlada();
+        }*/
+
+    }
+
+
+
+    private void salidaControlada() {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("¿Seguro que deseas salir de la aplicación?")
+                .setCancelable(false)
+                .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        finish();
+                    }
+                })
+                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                    }
+                });
+        alert = builder.create();
+        alert.show();
+
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (alert != null) {
+            alert.dismiss();
         }
     }
 
@@ -174,7 +238,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
@@ -184,7 +247,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.nav_camera) {
             // Handle the camera action
 
-            Toast.makeText(getApplicationContext(),"Hola. soy el item1",Toast.LENGTH_LONG).show();
+            // Toast.makeText(getApplicationContext(),"Hola. soy el item1",Toast.LENGTH_LONG).show();
 
             /*FragmentManager fm =  getFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
@@ -195,24 +258,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     .addToBackStack("Nombre opcional para este estado de la pila de atrás")
                     .commit();*/
-            setFragment(0);
-
-
-        }
-        else if (id == R.id.nav_gallery) {
-            Toast.makeText(getApplicationContext(),"Hola. soy el item 2",Toast.LENGTH_LONG).show();
             setFragment(1);
+            item.setChecked(true);
+            getSupportActionBar().setTitle(item.getTitle());
+            drawer.closeDrawer(GravityCompat.START);
+
+
+        } else if (id == R.id.nav_gallery) {
+            //Toast.makeText(getApplicationContext(),"Hola. soy el item 2",Toast.LENGTH_LONG).show();
+            setFragment(2);
+            item.setChecked(true);
+            getSupportActionBar().setTitle(item.getTitle());
+            drawer.closeDrawer(GravityCompat.START);
         } else if (id == R.id.nav_slideshow) {
 
             //Toast.makeText(getApplicationContext(),"Hola. soy el item 3",Toast.LENGTH_LONG).show();
-            setFragment(2);
+            setFragment(3);
+            item.setChecked(true);
+            getSupportActionBar().setTitle(item.getTitle());
+            drawer.closeDrawer(GravityCompat.START);
         } else if (id == R.id.nav_manage) {
 
-            Toast.makeText(getApplicationContext(),"Hola. soy el item 4",Toast.LENGTH_LONG).show();
-            setFragment(3);
-        } else if (id == R.id.nav_share) {
+            //Toast.makeText(getApplicationContext(), "Hola. soy el item 4", Toast.LENGTH_LONG).show();
+            setFragment(4);
+            item.setChecked(true);
+            getSupportActionBar().setTitle(item.getTitle());
+            drawer.closeDrawer(GravityCompat.START);
+        }
 
-        } else if (id == R.id.nav_send) {
+        else if (id == R.id.nav_share) {
 
         }
 
@@ -223,7 +297,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         return true;
     }
-
 
 
 }

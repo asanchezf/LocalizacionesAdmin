@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_ultimas_posiciones"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/fragment_ultimas_posiciones"
+    android:background="@drawable/degradado_fondo"
     android:orientation="vertical"
-    android:weightSum="100"
-    android:background="@drawable/degradado_fondo">
+    android:weightSum="100">
 
-    <!--android:name="com.google.android.gms.maps.MapFragmentPrueba"-->
+    <!--android:name="com.google.android.gms.maps.HomeFragment"-->
     <!--android:name="com.google.android.gms.maps.SupportMapFragment"-->
-    <!--<fragment
-        android:id="@+id/map"
+    <fragment
+        android:id="@+id/mapcompartido"
         android:name="com.google.android.gms.maps.MapFragment"
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="65"/>-->
+        android:layout_weight="65" />
 
 
 
@@ -23,13 +23,9 @@
         android:id="@+id/reciclador"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="35"
         android:padding="3dp"
-        android:scrollbars="vertical"
-        android:layout_weight="35"/>
-
-
-
-
+        android:scrollbars="vertical" />
 
 
 </LinearLayout>

@@ -8,7 +8,7 @@
 
     <string name="desarrollador">Desarrollador Android:</string>
     <string name="email_desarrollador">antoniom.sanchezf@gmail.com</string>
-    <string name="usuarios">Usuarios</string>
+    <string name="usuarios">Todos los usuarios</string>
     <string name="todas_las_posiciones">Todas las posiciones</string>
     <string name="Ultimas_posiciones">Últimas posiciones</string>
 
@@ -102,6 +102,8 @@
     <string name="password">Password</string>
     <string name="telefono">Telefono</string>
     <string name="email">Email</string>
+    <string name="mapa_todos">Mostrar mapa de todos</string>
+    <string name="title_activity_mapa_todas">MapaTodas</string>
 
 
 </resources>

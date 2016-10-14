@@ -26,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import modelos.Usuarios;
@@ -65,16 +66,21 @@ public class FragmentUsuarios extends Fragment{
     private Adaptador.OnItemClickListener listener;
     //private Context contexto;
 
+    public FragmentUsuarios() {
+    }
+
     @Nullable
     @Override
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Context contexto = getActivity();
-
-
-
-
-       // listener= OnItemClickListener;
         View v = inflater.inflate(R.layout.fragment_usuarios, container, false);
+
+        //POnemos el título haciendo referencia a la toolbar de la activity principal
+        //((MainActivity) getActivity()).getSupportActionBar().setTitle("Usuarios");
+
+
+
 
         lista = (RecyclerView) v.findViewById(R.id.reciclador);
 
@@ -173,6 +179,10 @@ public class FragmentUsuarios extends Fragment{
                                     Toast.makeText(getContext(),"Has pulsado en la imagen",Toast.LENGTH_LONG).show();
                                 }
 
+                                if(v.getId()==R.id.btncontactar){
+                                    Toast.makeText(getContext(),"Has pulsado en la llamada",Toast.LENGTH_LONG).show();
+                                }
+
                                else if(v.getId()==R.id.txtNombre){
                                     Toast.makeText(getContext(),"Has pulsado en el nombre",Toast.LENGTH_LONG).show();
                                 }
@@ -181,14 +191,8 @@ public class FragmentUsuarios extends Fragment{
 
                                     Toast.makeText(getContext(),"Has pulsado en el cardview",Toast.LENGTH_LONG).show();
 
-                                    crear();
+                                    crear(idPromocion);
 
-                                    /*Intent intent=new Intent(C_VISUALIZAR,AltaUsuarios.class);
-                                    intent.putExtra("Longitud",dlongitud);
-                                    intent.putExtra("Latitud",dlatitud);
-                                    intent.putExtra("Nombre",nombreusuariomapa);
-                                    intent.putExtra("Telefono",telefonousuariomapa);
-                                    startActivity(intent);*/
                                 }
 
                             }
@@ -226,12 +230,61 @@ public class FragmentUsuarios extends Fragment{
 
     }
 
-    private void crear() {
+    private void crear(int idPromocion) {
+        double dlatitud=0;
+        double dlongitud = 0;
+
+        int _id;
+        String nombre = null;
+        String telefono=null;
+        String id_Android=null;
+        String email=null;
+        String password=null;
+        String fechaalta=null;
+        _id=idPromocion;
+
+        //Reoorremos la lista de datos con un iterador para recogter los datos del registro actual: idPromocion
+        Iterator<Usuarios> it = listdatos.iterator();
+
+
+        while(it.hasNext()) {
+
+            usuarios = (Usuarios) it.next();
+
+            //idPromocion contiene el id de bbdd del usuario. Lo comparamos con el id que tiene la coleccion para recoger
+            //todos los datos del registro seleccionado
+            if (usuarios.getId()==(idPromocion)){
+
+                _id= usuarios.getId();
+                nombre= usuarios.getUsername();
+                telefono= usuarios.getTelefono();
+                id_Android= usuarios.getID_Android();
+                email= usuarios.getEmail();
+                password= usuarios.getPassword();
+                fechaalta=usuarios.getFechaCreacion();
+               // Toast.makeText(getActivity(),"Datos recogidos.",Toast.LENGTH_LONG).show();
+                break;
+            }
+
+
+        }
+
+
+
         Intent intent=new Intent(getActivity(),AltaUsuarios.class);
+        intent.putExtra("Nombre",nombre);
+        intent.putExtra("Id",_id);
+        intent.putExtra("ID_Android",id_Android);
+        intent.putExtra("Telefono",telefono);
+        intent.putExtra("Email",email);
+        intent.putExtra("Password",password);
+        intent.putExtra("FechaAlta",fechaalta);
+
         startActivity(intent);
 
 
     }
+
 
 
 }
