@@ -1,6 +1,7 @@
 package com.antonioejemplo.localizacionesadmin;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -64,7 +65,7 @@ public class FragmentUsuarios extends Fragment{
 
     //Variable que le pasamos a la llamada del adaptador. Necesita un listener
     private Adaptador.OnItemClickListener listener;
-    //private Context contexto;
+    private Context contexto;
 
     public FragmentUsuarios() {
     }
@@ -73,7 +74,7 @@ public class FragmentUsuarios extends Fragment{
     @Override
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Context contexto = getActivity();
+         contexto = getActivity();
         View v = inflater.inflate(R.layout.fragment_usuarios, container, false);
 
         //POnemos el título haciendo referencia a la toolbar de la activity principal
@@ -91,6 +92,12 @@ public class FragmentUsuarios extends Fragment{
         //lista.setLayoutManager(lManager);
         lista.setLayoutManager(
                 new LinearLayoutManager(contexto, LinearLayoutManager.VERTICAL, false));
+        //Se puede añadir un tipo de decoración particular creando una clase específica....
+        /*lista.addItemDecoration(
+                new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
+        lista.setItemAnimator(new DefaultItemAnimator());*/
+
+
 
         requestQueue = Volley.newRequestQueue(contexto);
         traerUsuarios();
@@ -115,6 +122,10 @@ public class FragmentUsuarios extends Fragment{
 
         Log.v(LOGTAG, "Ha llegado a immediateRequestTiempoActual. Uri: " + uri);
 
+        final ProgressDialog pDialog = new ProgressDialog(getActivity());
+        pDialog.setMessage("Obteniedo posiciones espera por favor...");
+        pDialog.show();
+
         myjsonObjectRequest = new MyJSonRequestImmediate(
                 Request.Method.GET,
                 uri,
@@ -124,6 +135,7 @@ public class FragmentUsuarios extends Fragment{
                     public void onResponse(JSONObject response2) {
 
                         //String id = "";
+                        pDialog.dismiss();
                         int id;
                         String username = "";
                         String password = "";
@@ -189,7 +201,7 @@ public class FragmentUsuarios extends Fragment{
 
                                 else{
 
-                                    Toast.makeText(getContext(),"Has pulsado en el cardview",Toast.LENGTH_LONG).show();
+                                    //Toast.makeText(getContext(),"Has pulsado en el cardview",Toast.LENGTH_LONG).show();
 
                                     crear(idPromocion);
 
@@ -206,7 +218,8 @@ public class FragmentUsuarios extends Fragment{
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Log.d(LOGTAG, "Error Respuesta en JSON: ");
-                            Toast.makeText(getContext(),"Se ha producido un error conectando con el servidor. Inténtalo de nuevo",Toast.LENGTH_LONG).show();
+                            pDialog.dismiss();
+                            Toast.makeText(getContext(),"Se ha producido un error conectando con el servidor.",Toast.LENGTH_LONG).show();
                         }
 
                         //priority = Request.Priority.IMMEDIATE;
@@ -219,6 +232,7 @@ public class FragmentUsuarios extends Fragment{
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d(LOGTAG, "Error Respuesta en JSON: " + error.getMessage());
+                        pDialog.dismiss();
                         Toast.makeText(getContext(), "Se ha producido un error conectando al Servidor", Toast.LENGTH_SHORT).show();
 
                     }
@@ -282,6 +296,12 @@ public class FragmentUsuarios extends Fragment{
 
         startActivity(intent);
 
+        //APLICAMOS ANIMACIONES:
+       /* getActivity().overridePendingTransition(R.anim.login_in,
+                R.anim.login_out);*/
+
+        getActivity().overridePendingTransition(R.anim.fade_in,
+                R.anim.fade_out);
 
     }
 

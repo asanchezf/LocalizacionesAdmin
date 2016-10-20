@@ -1,6 +1,7 @@
 package com.antonioejemplo.localizacionesadmin;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -106,9 +107,11 @@ public class FragmentTodasPosiciones extends Fragment{
         String uri = String.format(patronUrl);
 
         listdatos= new ArrayList<TodasLasPosiciones>();
-
         Log.v(LOGTAG, "Ha llegado a immediateRequestTiempoActual. Uri: " + uri);
 
+        final ProgressDialog pDialog = new ProgressDialog(getActivity());
+        pDialog.setMessage("Obteniedo posiciones espera por favor...");
+        pDialog.show();
         myjsonObjectRequest = new MyJSonRequestImmediate(
                 Request.Method.GET,
                 uri,
@@ -117,7 +120,7 @@ public class FragmentTodasPosiciones extends Fragment{
                     @Override
                     public void onResponse(JSONObject response2) {
 
-                        //String id = "";
+                        pDialog.dismiss();
                         int id;
                         String poblacion = "";
                         String calle = "";
@@ -202,7 +205,8 @@ public class FragmentTodasPosiciones extends Fragment{
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Log.d(LOGTAG, "Error Respuesta en JSON: ");
-                            Toast.makeText(getContext(),"Se ha producido un error conectando con el servidor. Inténtalo de nuevo",Toast.LENGTH_LONG).show();
+                            pDialog.dismiss();
+                            Toast.makeText(getContext(),"Se ha producido un error conectando con el servidor.",Toast.LENGTH_LONG).show();
                         }
 
                         //priority = Request.Priority.IMMEDIATE;
@@ -215,6 +219,7 @@ public class FragmentTodasPosiciones extends Fragment{
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d(LOGTAG, "Error Respuesta en JSON: " + error.getMessage());
+                        pDialog.dismiss();
                         Toast.makeText(getContext(), "Se ha producido un error conectando al Servidor", Toast.LENGTH_SHORT).show();
 
                     }

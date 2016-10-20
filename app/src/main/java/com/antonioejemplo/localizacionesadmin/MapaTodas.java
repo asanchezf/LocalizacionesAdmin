@@ -80,7 +80,6 @@ public class MapaTodas extends AppCompatActivity implements OnMapReadyCallback {
         pDialog.setMessage("Obteniedo posiciones espera por favor...");
         pDialog.show();
 
-
         StringRequest stringRequest = new StringRequest(metodo_Get_POST, uri,
                 new Response.Listener<String>() {
                     public static final String LOGTAG ="Volley" ;

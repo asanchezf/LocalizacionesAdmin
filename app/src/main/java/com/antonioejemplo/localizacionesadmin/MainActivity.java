@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 MainFragment mainFragment=new MainFragment();
                 transaction.replace(R.id.fragment,mainFragment);//Si la clase MainFragment importa app.fragment
                 //fragmentManager1.beginTransaction().remove(fragmentUltimas);
+
                 transaction.commit();
 
                 break;
@@ -111,6 +112,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 fragmentTransaction.replace(R.id.fragment, fragmentUsuario, "usuarios_tag");//Si la clase MainFragment importa android.support.v4.app.Fragment
                 //fragmentTransaction.addToBackStack(null);//Botón BackStack
                 //getSupportActionBar().setTitle("Usuarios");
+
                 fragmentTransaction.commit();
 
                 break;
@@ -147,6 +149,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case 4:
                 //Mapa todas las posiciones
                 Intent intent=new Intent(MainActivity.this,MapaTodas.class);
+
+                //Al se un mapa no se aprecia el efecto.
+                /*overridePendingTransition(R.anim.fade_in,
+                        R.anim.fade_out);*/
                 startActivity(intent);
 
 
