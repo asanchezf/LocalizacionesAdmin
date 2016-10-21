@@ -10,11 +10,6 @@
         tools:context="com.antonioejemplo.localizacionesadmin.AltaUsuarios"
         android:background="@drawable/degradado_fondo">
 
-
-
-
-
-
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -41,7 +36,7 @@
 
                 android:hint="@string/Name"
                 android:inputType="textCapSentences"
-/>
+                android:editable="false" />
 
 <!--ID-->
         </android.support.design.widget.TextInputLayout>
