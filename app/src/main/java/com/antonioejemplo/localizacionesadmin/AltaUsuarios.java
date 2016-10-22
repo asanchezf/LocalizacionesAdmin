@@ -61,7 +61,7 @@ public class AltaUsuarios extends AppCompatActivity {
 
     // Modo del formulario
     private int modo;
-    private Context contextoActivity;
+    //private Context contextoActivity;
 
     //URL DEL WS
     private static final String EDIT_URL_VOLLEY = "http://petty.hol.es/actualizar_usuario.php";//WS
@@ -71,6 +71,15 @@ public class AltaUsuarios extends AppCompatActivity {
     private static final String KEY_EMAIL = "Email";
     private static final String KEY_TELEFONO = "Telefono";
     private static final String KEY_OBSERVACIIONES = "Observaciones";
+
+    private String Id = null;
+    private String Password = null;
+    private String Email = null;
+    private String Telefono = null;
+    private String Observaciones = null;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,7 +130,12 @@ public class AltaUsuarios extends AppCompatActivity {
         email.setText(bundle.getString("Email"));
         password.setText(bundle.getString("Password"));
         alta.setText(bundle.getString("FechaAlta"));
-
+        String observacionesNOnull=bundle.getString("Observaciones");
+        if(observacionesNOnull.equals("null")) {
+            observaciones.setText("");
+            //observaciones.setText(bundle.getString("Observaciones"));
+        }
+        else observaciones.setText(bundle.getString("Observaciones"));
 
 
 /*
@@ -209,9 +223,11 @@ public class AltaUsuarios extends AppCompatActivity {
 
         if (id == R.id.modificar_usuario) {
 
-            //modificarUsuarioconVolley();
-            modificarUsuariosinVolley();
+          if(validar()) {
 
+              //modificarUsuarioconVolley();
+              modificarUsuariosinVolley();
+          }
             return true;
         }
 
@@ -223,6 +239,25 @@ public class AltaUsuarios extends AppCompatActivity {
 
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private boolean validar() {
+
+
+        Id = idUsuario.getText().toString().trim();
+        Password = password.getText().toString().trim();
+        Email = email.getText().toString().trim();
+        Telefono = telefono.getText().toString().trim();
+        Observaciones = observaciones.getText().toString().trim();
+
+
+        if (Password.isEmpty() || Email.isEmpty() || Telefono.isEmpty()) {
+            Toast.makeText(getApplicationContext(),"Debes rellenar los campos contraseña, email y teléfono",Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+
+        return true;
     }
 
     private void establecerModo(int m) {
@@ -280,7 +315,7 @@ public class AltaUsuarios extends AppCompatActivity {
     }
 
 
-    private void modificarUsuarioconVolley(){
+    private void modificarUsuarioconVolley() {
 
         String tag_json_obj_actual = "json_obj_req_actual";
 
@@ -319,7 +354,7 @@ public class AltaUsuarios extends AppCompatActivity {
                                 group.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                                 snack.show();*/
 
-                                Toast.makeText(getApplicationContext(),"Registro actualizado",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "Registro actualizado", Toast.LENGTH_SHORT).show();
 
                             } else if (resultJSON == "2") {
 
@@ -331,13 +366,13 @@ public class AltaUsuarios extends AppCompatActivity {
                                 ViewGroup group = (ViewGroup) snack.getView();
                                 group.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                                 snack.show();*/
-                                Toast.makeText(getApplicationContext(),"No se ha podido actualizar el registro",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "No se ha podido actualizar el registro", Toast.LENGTH_SHORT).show();
                             }
 
 
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            Toast.makeText(getApplicationContext(),"No se ha podido actualizar el registro",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "No se ha podido actualizar el registro", Toast.LENGTH_SHORT).show();
                         }
 
                     }
@@ -347,7 +382,7 @@ public class AltaUsuarios extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         // Toast.makeText(Login.this,error.toString(),Toast.LENGTH_LONG ).show();
                         pDialog.dismiss();
-                        Toast.makeText(getApplicationContext(),"No se ha podido actualizar el registro",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "No se ha podido actualizar el registro", Toast.LENGTH_SHORT).show();
                         /*Snackbar snack = Snackbar.make(btnRegistrarse, error.toString(), Snackbar.LENGTH_LONG);
                         ViewGroup group = (ViewGroup) snack.getView();
                         group.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
@@ -356,12 +391,11 @@ public class AltaUsuarios extends AppCompatActivity {
                 })
 
 
-
         {
             //CABECERA DE LA PETICIÓN
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String,String> headers = new HashMap<String, String>();
+                Map<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json");
                 headers.put("Accept", "application/json");
                 return headers;
@@ -370,7 +404,7 @@ public class AltaUsuarios extends AppCompatActivity {
             //PARAMETROS ENVIADOS EN LA PETICIÓN POST
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String,String> params = new HashMap<String, String>();
+                Map<String, String> params = new HashMap<String, String>();
                 params.put(KEY_ID_USUARIO, Id);
                 params.put(KEY_PASSWORD, Password);
                 params.put(KEY_EMAIL, Email);
@@ -385,8 +419,6 @@ public class AltaUsuarios extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }*/
-
-
 
 
                 return params;
@@ -409,20 +441,20 @@ public class AltaUsuarios extends AppCompatActivity {
         hiloconexion.execute(EDIT_URL_VOLLEY);   // Parámetros que recibe doInBackground
     }
 
-    public class ObtenerWebService extends AsyncTask<String,Void,String> {
+    public class ObtenerWebService extends AsyncTask<String, Void, String> {
 
-        final String Id = idUsuario.getText().toString().trim();
+        /*final String Id = idUsuario.getText().toString().trim();
         final String Password = password.getText().toString().trim();
         final String Email = email.getText().toString().trim();
         final String Telefono = telefono.getText().toString().trim();
-        final String Observaciones = observaciones.getText().toString().trim();
+        final String Observaciones = observaciones.getText().toString().trim();*/
         @Override
         protected String doInBackground(String... params) {
 
 
             String cadena = params[0];
             URL url = null; // Url de donde queremos obtener información
-            String devuelve ="";
+            String devuelve = "";
 
             try {
                 HttpURLConnection urlConn;
@@ -462,8 +494,8 @@ public class AltaUsuarios extends AppCompatActivity {
                 if (respuesta == HttpURLConnection.HTTP_OK) {
 
                     String line;
-                    BufferedReader br=new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
-                    while ((line=br.readLine()) != null) {
+                    BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
+                    while ((line = br.readLine()) != null) {
                         result.append(line);
                         //response+=line;
                     }
@@ -477,9 +509,9 @@ public class AltaUsuarios extends AppCompatActivity {
                     if (resultJSON == 1) {      // hay un registro que mostrar
                         devuelve = "El usuario se ha modificado correctamente";
 
-                        Intent intent=new Intent(AltaUsuarios.this,MainActivity.class);
+                        Intent intent = new Intent(AltaUsuarios.this, MainActivity.class);
                         startActivity(intent);
-
+                        finish();
 
                     } else if (resultJSON == 2) {
                         devuelve = "El usuario no ha podido ser modificado.";
@@ -497,10 +529,8 @@ public class AltaUsuarios extends AppCompatActivity {
             return devuelve;
 
 
-
             //return null;
         }
-
 
 
         @Override
@@ -511,7 +541,7 @@ public class AltaUsuarios extends AppCompatActivity {
             //Toast.makeText(getApplicationContext(),devuelve,Toast.LENGTH_LONG).show();
 
 
-            Toast.makeText(getApplicationContext(),devuelve,Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), devuelve, Toast.LENGTH_LONG).show();
 
             /*Snackbar snack = Snackbar.make(btnRegistrarse, devuelve, Snackbar.LENGTH_LONG);
             ViewGroup group = (ViewGroup) snack.getView();

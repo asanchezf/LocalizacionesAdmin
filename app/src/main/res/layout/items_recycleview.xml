@@ -42,17 +42,6 @@
              />
 
 
-        <!--<ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/llamada_black"
-            android:id="@+id/imgllamada"
-            android:layout_alignParentTop="@+id/imagenUsuario"
-            android:layout_alignParentEnd="true" />-->
-
-
-
-
         <TextView
             android:id="@+id/txtNombre"
             android:text="Nombre"
@@ -61,7 +50,7 @@
             android:layout_alignTop="@+id/imagenUsuario"
             android:layout_toRightOf="@+id/imagenUsuario"
             android:layout_toEndOf="@+id/imagenUsuario"
-            android:textColor="@android:color/white"/>
+            android:textColor="@android:color/holo_orange_dark"/>
 
         <TextView
             android:id="@+id/txtTelefono"

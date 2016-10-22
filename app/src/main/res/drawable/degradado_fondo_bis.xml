@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--Para realizar el degradado: primero se crea un item, luego un shape dentro un gradien que debe llevar obligatoriamente
+    un starcolor, un endcolor y un angle. Después se le debe aplicaar en el backgroud del layout o del elemento en cuestión de
+    la siguiente manera:  android:background="@drawable/degradado_fondo"-->
+
+    <item>
+
+        <shape>
+            <gradient android:startColor="@color/md_green_800"
+                android:endColor="@color/md_green_900"
+                android:angle="180">
+                <!--angle debe ser múltiplo de 45-->
+
+
+            </gradient>
+
+
+        </shape>
+
+    </item>
+</selector>

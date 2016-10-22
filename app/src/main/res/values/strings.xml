@@ -98,12 +98,14 @@
 
     <string name="title_activity_borrar_usuarios">Borrar Contactos</string>
     <string name="buscar_en_searchview">Buscar nombre</string>
-    <string name="id">Id de usuario</string>
+    <string name="id">Código de usuario</string>
     <string name="password">Password</string>
     <string name="telefono">Telefono</string>
     <string name="email">Email</string>
     <string name="mapa_todos">Mostrar mapa de todos</string>
     <string name="title_activity_mapa_todas">MapaTodas</string>
+    <string name="c_digo_del_dispositivo">Código del dispositivo</string>
+    <string name="fecha_alta">Fecha alta</string>
 
 
 </resources>

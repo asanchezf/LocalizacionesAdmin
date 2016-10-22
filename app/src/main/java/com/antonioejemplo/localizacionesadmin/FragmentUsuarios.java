@@ -143,6 +143,7 @@ public class FragmentUsuarios extends Fragment{
                         String id_Android = "";
                         String telefono = "";
                         String alta = "";
+                        String observaciones = "";
 
 
 
@@ -164,6 +165,7 @@ public class FragmentUsuarios extends Fragment{
 
                                     telefono = json_array.getJSONObject(z).getString("Telefono");
                                     alta = json_array.getJSONObject(z).getString("FechaCreacion");
+                                    observaciones = json_array.getJSONObject(z).getString("Observaciones");
 
                                     usuarios=new Usuarios();
                                     usuarios.setId(id);
@@ -173,6 +175,7 @@ public class FragmentUsuarios extends Fragment{
                                     usuarios.setID_Android(id_Android);
                                     usuarios.setTelefono(telefono);
                                     usuarios.setFechaCreacion(alta);
+                                    usuarios.setObservaciones(observaciones);
 
                                     listdatos.add(usuarios);
                                     Log.d(LOGTAG, "Tamaño listadatos: "+listdatos.size());
@@ -256,6 +259,7 @@ public class FragmentUsuarios extends Fragment{
         String password=null;
         String fechaalta=null;
         _id=idPromocion;
+        String observaciones=null;
 
         //Reoorremos la lista de datos con un iterador para recogter los datos del registro actual: idPromocion
         Iterator<Usuarios> it = listdatos.iterator();
@@ -276,6 +280,7 @@ public class FragmentUsuarios extends Fragment{
                 email= usuarios.getEmail();
                 password= usuarios.getPassword();
                 fechaalta=usuarios.getFechaCreacion();
+                observaciones=usuarios.getObservaciones();
                // Toast.makeText(getActivity(),"Datos recogidos.",Toast.LENGTH_LONG).show();
                 break;
             }
@@ -293,6 +298,7 @@ public class FragmentUsuarios extends Fragment{
         intent.putExtra("Email",email);
         intent.putExtra("Password",password);
         intent.putExtra("FechaAlta",fechaalta);
+        intent.putExtra("Observaciones",observaciones);
 
         startActivity(intent);
 

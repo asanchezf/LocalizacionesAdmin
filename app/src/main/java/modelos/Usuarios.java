@@ -7,12 +7,18 @@ package modelos;
 public class Usuarios {
 
     private int Id;
-    private String Username,Password,Email,ID_Android,Telefono,FechaCreacion;
+    private String Username,Password,Email,ID_Android,Telefono,FechaCreacion,Observaciones;
 
     /*{"Id":"1","Username":"Antonio","Password":"1","Email":"antoniom.sanchezf@gmail.com",
     "ID_Android":"644961f49d160c93","Telefono":"659355808","FechaCreacion":"2016-05-10 00:00:00"}*/
 
+    public String getObservaciones() {
+        return Observaciones;
+    }
 
+    public void setObservaciones(String observaciones) {
+        Observaciones = observaciones;
+    }
 
     public String getUsername() {
         return Username;

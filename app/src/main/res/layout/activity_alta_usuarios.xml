@@ -4,7 +4,6 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="com.antonioejemplo.localizacionesadmin.AltaUsuarios"
@@ -25,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/toolbar"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="15dp"
             android:theme="@style/TextLabel">
 
             <android.support.v7.widget.AppCompatEditText
@@ -36,28 +35,32 @@
 
                 android:hint="@string/Name"
                 android:inputType="textCapSentences"
-                android:editable="false" />
-
-<!--ID-->
+                 />
         </android.support.design.widget.TextInputLayout>
 
+    <!--IDAndroid-->
     <android.support.design.widget.TextInputLayout
         android:id="@+id/id_Androidwr"
         android:layout_below="@+id/nombreWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:paddingLeft="5dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginLeft="35dp"
+
+        android:layout_marginTop="0dp"
         android:theme="@style/TextLabel"
         >
-        <EditText
+        <android.support.v7.widget.AppCompatEditText
             android:id="@+id/id_Android"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="ID_Android" />
+            android:layout_alignParentLeft="true"
+
+            android:hint="@string/c_digo_del_dispositivo"
+            android:inputType="textCapSentences"
+            />
     </android.support.design.widget.TextInputLayout>
 
+    <!--IDUsuario-->
     <android.support.design.widget.TextInputLayout
             android:id="@+id/idWrapper"
             android:layout_width="match_parent"
@@ -72,7 +75,6 @@
                 android:layout_width="@dimen/abc_search_view_preferred_width"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-
                 android:inputType="textCapSentences"
                 android:hint="@string/id"
                 />
@@ -138,7 +140,6 @@
             <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/email"
                 android:layout_width="296dp"
-
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/telefonoWrapper"
@@ -161,11 +162,10 @@
             <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/alta"
                 android:layout_width="296dp"
-
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/altawrp"
-                android:hint="Fecha alta"
+                android:hint="@string/fecha_alta"
                 android:inputType="textPostalAddress" />
         </android.support.design.widget.TextInputLayout>
 
@@ -177,7 +177,7 @@
             android:layout_height="wrap_content"
             android:theme="@style/TextLabel"
             android:paddingLeft="5dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="15dp"
             android:layout_below="@+id/altawrp">
 
             <android.support.v7.widget.AppCompatEditText
@@ -203,12 +203,9 @@
             android:textColor="@android:color/white"
             android:layout_marginRight="33dp"
             android:layout_marginEnd="33dp"
-
-
             android:layout_alignBottom="@+id/observacionesWrapper"
             android:layout_alignRight="@+id/observacionesWrapper"
             android:layout_alignEnd="@+id/observacionesWrapper" />
-
 
     </RelativeLayout>
 
