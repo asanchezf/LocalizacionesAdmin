@@ -1,4 +1,4 @@
-package com.antonioejemplo.localizacionesadmin;
+package adaptadores;
 
 import android.content.Context;
 import android.support.v7.widget.CardView;
@@ -6,23 +6,24 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.antonioejemplo.localizacionesadmin.R;
+
 import java.util.List;
 
-import modelos.Usuarios;
+import modelos.UltimasPosiciones;
 
 /**
  * Created by Susana on 22/09/2016.
  */
-public class Adaptador extends RecyclerView.Adapter<Adaptador.UsuariosViewHolder> {
+public class AdaptadorUltimasPosiciones extends RecyclerView.Adapter<AdaptadorUltimasPosiciones.UsuariosViewHolder> {
 
     private final Context contexto;
-    private List<Usuarios> items;//Collection de Modelo. Los datos nos llegan desde el Main en esta Collection List()
-    private Usuarios usuarios;
+    private List<UltimasPosiciones> items;//Collection de Modelo. Los datos nos llegan desde el Main en esta Collection List()
+    private UltimasPosiciones ultimasPosiciones;
     private static final String LOGTAG = "AdapatadorVolley";//Constante para gestionar la escritura en el Log
     private OnItemClickListener escucha;
 
@@ -32,14 +33,15 @@ public class Adaptador extends RecyclerView.Adapter<Adaptador.UsuariosViewHolder
 
 
     //Constructor de la clase Adaptador
-    public Adaptador(List<Usuarios> datos, OnItemClickListener escucha, Context contexto) {
+    public AdaptadorUltimasPosiciones(List<UltimasPosiciones> datos, OnItemClickListener escucha, Context contexto) {
         this.contexto = contexto;
         this.escucha = escucha;
         this.items = datos;
 
+
     }
 
-    public Adaptador(Context contexto) {
+    public AdaptadorUltimasPosiciones(Context contexto) {
         this.contexto = contexto;
     }
 
@@ -71,7 +73,7 @@ public class Adaptador extends RecyclerView.Adapter<Adaptador.UsuariosViewHolder
     public UsuariosViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.items_recycleview, parent, false);
+                .inflate(R.layout.items_recycleview_ult_posiciones_bis, parent, false);
 
 
         UsuariosViewHolder tvh = new UsuariosViewHolder(itemView);
@@ -103,25 +105,24 @@ public class Adaptador extends RecyclerView.Adapter<Adaptador.UsuariosViewHolder
     @Override
     public void onBindViewHolder(UsuariosViewHolder holder, int position) {
 
-        usuarios = items.get(position);
+        ultimasPosiciones = items.get(position);
 
         //Llamamos a dameFecha pasándole items.get(position).getDia() para que la formatee
-        holder.txtNombre.setText((items.get(position).getUsername()));
+        holder.txtNombre_ult.setText((items.get(position).getUsername()));
 
-        holder.txtEmail.setText(items.get(position).getEmail());
+        holder.txtFechaHora.setText(items.get(position).getFechaHora());
 
-        holder.txtTelefono.setText(items.get(position).getTelefono());
-        holder.txtfechaalta.setText(items.get(position).getFechaCreacion());
+        holder.txtLongitud.setText(items.get(position).getLongitud());
+        holder.txtLatitud.setText(items.get(position).getLatitud());
 
+        holder.txtLocalizacion.setText(items.get(position).getCalle()+" "+items.get(position).getNumero()+" "+items.get(position).getPoblacion());
+        holder.txtVelocidad.setText(items.get(position).getVelocidad()+ " "+ "Km/h");
         //holder.imagenUsuario.setImageDrawable(R.drawable.brujula_litle);
-        holder.imagenUsuario.setImageResource(R.drawable.brujula_litle);
-        //holder.imagenllamada.setImageResource(R.drawable.llamada_black);
-
-        //dameicono(items.get(position).getImagen());
-        holder.cardView.setRadius(10);
-        holder.cardView.setCardElevation(6);//Parece que no se aprecia
+        holder.imagenUsuario_ult.setImageResource(R.drawable.brujula_litle);
         holder.cardView.setContentPadding(6,6,6,6);
-
+        holder.cardView.setRadius(10);
+        holder.cardView.setCardElevation(6);
+        //dameicono(items.get(position).getImagen());
 
     }
 
@@ -169,35 +170,35 @@ public class Adaptador extends RecyclerView.Adapter<Adaptador.UsuariosViewHolder
     //Para implementar el patrón viewHolder...
     public class UsuariosViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         //Se definen las views que contenga el layout que dibuja los items del recycler
-        private TextView txtNombre;
-        private TextView txtTelefono;
-        private TextView txtEmail;
-        private TextView txtfechaalta;
-        private ImageView imagenUsuario;
+        private TextView txtNombre_ult;
+        private TextView txtFechaHora;
+        private TextView txtLongitud;
+        private TextView txtLatitud;
+        private TextView txtLocalizacion;
+        private TextView txtVelocidad;
+        private ImageView imagenUsuario_ult;
+        private TextView txtUbicacion;
         private CardView cardView;
-        //private ImageView imagenllamada;
-        private Button btnLlamar;
 
         public UsuariosViewHolder(View itemView) {
             super(itemView);
 
-            txtNombre = (TextView) itemView.findViewById(R.id.txtNombre);
-            txtTelefono = (TextView) itemView.findViewById(R.id.txtTelefono);
-            txtEmail = (TextView) itemView.findViewById(R.id.txtEmail);
-            txtfechaalta = (TextView) itemView.findViewById(R.id.fechaAlta);
-            imagenUsuario = (ImageView) itemView.findViewById(R.id.imagenUsuario);
-            cardView=(CardView)itemView.findViewById(R.id.tarjeta);
-            btnLlamar=(Button) itemView.findViewById(R.id.btncontactar);
+            txtNombre_ult = (TextView) itemView.findViewById(R.id.txtNombre_ult);
+            txtFechaHora = (TextView) itemView.findViewById(R.id.FechaHora_ult);
+            txtLongitud = (TextView) itemView.findViewById(R.id.Longitud_ult);
+            txtLatitud = (TextView) itemView.findViewById(R.id.Latitud_ult);
+            txtLocalizacion = (TextView) itemView.findViewById(R.id.Localizacion_ult);//POnemos toda la dirección
+            txtVelocidad = (TextView) itemView.findViewById(R.id.Velocidad_ult);
 
-          //  imagenllamada = (ImageView) itemView.findViewById(R.id.imgllamada);
-
+            imagenUsuario_ult = (ImageView) itemView.findViewById(R.id.imagenUsuario_ult);
+            cardView=(CardView)itemView.findViewById(R.id.carviewUltimasPosiciones);
+            txtUbicacion = (TextView) itemView.findViewById(R.id.txtubicacion);
             //Preparamos el listener y se lo asignamos a los controles que queramos...
-            itemView.setOnClickListener(this);
+            //itemView.setOnClickListener(this);//Para todo el carview completo
 
-            //imagenUsuario.setOnClickListener(this);
-            //txtNombre.setOnClickListener(this);
-            //imagenllamada.setOnClickListener(this);
-            btnLlamar.setOnClickListener(this);
+            //imagenUsuario_ult.setOnClickListener(this);//para la imagen
+            //txtNombre_ult.setOnClickListener(this);//para el nombre
+            txtUbicacion.setOnClickListener(this);
 
         }
 

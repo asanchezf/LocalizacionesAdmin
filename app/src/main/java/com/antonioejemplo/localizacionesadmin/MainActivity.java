@@ -16,6 +16,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import mapas.MapaTodas;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
 
@@ -147,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case 4:
                 //Mapa todas las posiciones
-                Intent intent=new Intent(MainActivity.this,MapaTodas.class);
+                Intent intent=new Intent(MainActivity.this, MapaTodas.class);
 
                 //Al se un mapa no se aprecia el efecto.
                 /*overridePendingTransition(R.anim.fade_in,

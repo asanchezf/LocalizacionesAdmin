@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 //import android.support.v4.app.Fragment;
-;
+;import adaptadores.Adaptador;
 
 
 /**

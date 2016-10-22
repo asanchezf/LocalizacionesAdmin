@@ -1,4 +1,4 @@
-package com.antonioejemplo.localizacionesadmin;
+package mapas;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -12,6 +12,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
+import com.antonioejemplo.localizacionesadmin.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -26,6 +27,8 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import volley.AppController;
 
 public class MapaTodas extends AppCompatActivity implements OnMapReadyCallback {
 

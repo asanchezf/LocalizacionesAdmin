@@ -1,4 +1,4 @@
-package com.antonioejemplo.localizacionesadmin;
+package volley;
 
 import android.graphics.Bitmap;
 import android.widget.ImageView;
