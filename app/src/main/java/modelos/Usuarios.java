@@ -7,10 +7,26 @@ package modelos;
 public class Usuarios {
 
     private int Id;
-    private String Username,Password,Email,ID_Android,Telefono,FechaCreacion,Observaciones;
-
+    private String Username,Password,Email,ID_Android,Telefono,FechaCreacion,FechaModificacion,Observaciones;
+    //private long FechaCreacion;
     /*{"Id":"1","Username":"Antonio","Password":"1","Email":"antoniom.sanchezf@gmail.com",
     "ID_Android":"644961f49d160c93","Telefono":"659355808","FechaCreacion":"2016-05-10 00:00:00"}*/
+
+    public String getFechaCreacion() {
+        return FechaCreacion;
+    }
+
+    public void setFechaCreacion(String fechaCreacion) {
+        FechaCreacion = fechaCreacion;
+    }
+
+    public String getFechaModificacion() {
+        return FechaModificacion;
+    }
+
+    public void setFechaModificacion(String fechaModificacion) {
+        FechaModificacion = fechaModificacion;
+    }
 
     public String getObservaciones() {
         return Observaciones;
@@ -68,13 +84,7 @@ public class Usuarios {
         Telefono = telefono;
     }
 
-    public String getFechaCreacion() {
-        return FechaCreacion;
-    }
 
-    public void setFechaCreacion(String fechaCreacion) {
-        FechaCreacion = fechaCreacion;
-    }
 
     @Override
     public String toString() {

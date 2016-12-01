@@ -1,11 +1,18 @@
 package com.antonioejemplo.localizacionesadmin;
 
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -126,7 +133,7 @@ public class FragmentUsuarios extends Fragment{
         Log.v(LOGTAG, "Ha llegado a immediateRequestTiempoActual. Uri: " + uri);
 
         final ProgressDialog pDialog = new ProgressDialog(getActivity());
-        pDialog.setMessage("Obteniedo posiciones espera por favor...");
+        pDialog.setMessage("Obteniedo datos de los usuarios espera por favor...");
         pDialog.show();
 
         myjsonObjectRequest = new MyJSonRequestImmediate(
@@ -146,6 +153,7 @@ public class FragmentUsuarios extends Fragment{
                         String id_Android = "";
                         String telefono = "";
                         String alta = "";
+                        String ultimamodi="";
                         String observaciones = "";
 
 
@@ -168,6 +176,7 @@ public class FragmentUsuarios extends Fragment{
 
                                     telefono = json_array.getJSONObject(z).getString("Telefono");
                                     alta = json_array.getJSONObject(z).getString("FechaCreacion");
+                                    ultimamodi= json_array.getJSONObject(z).getString("FechaModificacion");
                                     observaciones = json_array.getJSONObject(z).getString("Observaciones");
 
                                     usuarios=new Usuarios();
@@ -178,6 +187,7 @@ public class FragmentUsuarios extends Fragment{
                                     usuarios.setID_Android(id_Android);
                                     usuarios.setTelefono(telefono);
                                     usuarios.setFechaCreacion(alta);
+                                    usuarios.setFechaModificacion(ultimamodi);
                                     usuarios.setObservaciones(observaciones);
 
                                     listdatos.add(usuarios);
@@ -191,14 +201,41 @@ public class FragmentUsuarios extends Fragment{
                         //Le pasamos new Adaptador.OnItemClickListener() para inicializar el listener
                         adapter=new Adaptador(listdatos, new Adaptador.OnItemClickListener() {
                             @Override
-                            public void onClick(RecyclerView.ViewHolder holder, int idPromocion, View v) {
+                            public void onClick(RecyclerView.ViewHolder holder, final int idPromocion, final View v) {
 
                                 if(v.getId()==R.id.imagenUsuario){
                                     Toast.makeText(getContext(),"Has pulsado en la imagen",Toast.LENGTH_LONG).show();
                                 }
 
                                 if(v.getId()==R.id.btncontactar){
-                                    Toast.makeText(getContext(),"Has pulsado en la llamada",Toast.LENGTH_LONG).show();
+                                    //Toast.makeText(getContext(),"Has pulsado en la llamada",Toast.LENGTH_LONG).show();
+
+                                    AlertDialog.Builder dialogEliminar = new AlertDialog.Builder(getContext());
+
+                                    dialogEliminar.setIcon(android.R.drawable.ic_dialog_alert);
+                                    dialogEliminar.setTitle(getResources().getString(
+                                            R.string.agenda_call_titulo));
+                                    dialogEliminar.setMessage(getResources().getString(
+                                            R.string.agenda_call_mensaje));
+                                    dialogEliminar.setCancelable(false);
+
+                                    dialogEliminar.setPositiveButton(
+                                            getResources().getString(android.R.string.ok),
+                                            new DialogInterface.OnClickListener() {
+
+                                                public void onClick(DialogInterface dialog, int boton) {
+
+                                                        llamar(idPromocion,v);
+                                                }
+                                            });
+
+                                    dialogEliminar.setNegativeButton(android.R.string.no, null);
+
+                                    dialogEliminar.show();
+
+
+
+
                                 }
 
                                else if(v.getId()==R.id.txtNombre){
@@ -250,6 +287,56 @@ public class FragmentUsuarios extends Fragment{
 
     }
 
+    private void llamar(int idPromocion, View v) {
+        int _id;
+        String nombre = null;
+        String telefono=null;
+        //Reoorremos la lista de datos con un iterador para recogter los datos del registro actual: idPromocion
+        Iterator<Usuarios> it = listdatos.iterator();
+
+
+        while(it.hasNext()) {
+
+            usuarios = (Usuarios) it.next();
+
+            //idPromocion contiene el id de bbdd del usuario. Lo comparamos con el id que tiene la coleccion para recoger
+            //todos los datos del registro seleccionado
+            if (usuarios.getId()==(idPromocion)){
+
+                _id= usuarios.getId();
+                nombre= usuarios.getUsername();
+                telefono= usuarios.getTelefono();
+
+                // Toast.makeText(getActivity(),"Datos recogidos.",Toast.LENGTH_LONG).show();
+                break;
+            }
+
+
+        }
+
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + telefono));
+
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            //View v = null;
+            Snackbar snack = Snackbar.make(v, R.string.agenda_permiso_llamadas, Snackbar.LENGTH_LONG);
+            ViewGroup group = (ViewGroup) snack.getView();
+            group.setBackgroundColor(getResources().getColor(R.color.md_deep_orange_700));
+            snack.show();
+            return;
+        }
+        startActivity(intent);
+
+
+
+    }
+
     private void crear(int idPromocion) {
         double dlatitud=0;
         double dlongitud = 0;
@@ -261,12 +348,12 @@ public class FragmentUsuarios extends Fragment{
         String email=null;
         String password=null;
         String fechaalta=null;
+        String fechamodificacion=null;
         _id=idPromocion;
         String observaciones=null;
 
         //Reoorremos la lista de datos con un iterador para recogter los datos del registro actual: idPromocion
         Iterator<Usuarios> it = listdatos.iterator();
-
 
         while(it.hasNext()) {
 
@@ -283,6 +370,7 @@ public class FragmentUsuarios extends Fragment{
                 email= usuarios.getEmail();
                 password= usuarios.getPassword();
                 fechaalta=usuarios.getFechaCreacion();
+                fechamodificacion=usuarios.getFechaModificacion();
                 observaciones=usuarios.getObservaciones();
                // Toast.makeText(getActivity(),"Datos recogidos.",Toast.LENGTH_LONG).show();
                 break;
@@ -291,8 +379,7 @@ public class FragmentUsuarios extends Fragment{
 
         }
 
-
-
+        //Long fechaaltaLong= Long.parseLong(fechaalta);
         Intent intent=new Intent(getActivity(),AltaUsuarios.class);
         intent.putExtra("Nombre",nombre);
         intent.putExtra("Id",_id);
@@ -301,9 +388,12 @@ public class FragmentUsuarios extends Fragment{
         intent.putExtra("Email",email);
         intent.putExtra("Password",password);
         intent.putExtra("FechaAlta",fechaalta);
+        //intent.putExtra("FechaAlta",fechaalta);
+        intent.putExtra("FechaModificacion",fechamodificacion);
         intent.putExtra("Observaciones",observaciones);
 
         startActivity(intent);
+
 
         //APLICAMOS ANIMACIONES:
        /* getActivity().overridePendingTransition(R.anim.login_in,
@@ -315,5 +405,12 @@ public class FragmentUsuarios extends Fragment{
     }
 
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(adapter!=null) {
+            traerUsuarios();
+            adapter.notifyDataSetChanged();
+        }
+    }
 }

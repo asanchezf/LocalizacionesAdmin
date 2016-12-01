@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         //getSupportActionBar().setTitle("Administración");
 
         //SE DECLARAN LOS FRAGMENTS
@@ -173,6 +172,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         }else {
+               // super.onBackPressed();
+
                 salidaControlada();
             }
 
