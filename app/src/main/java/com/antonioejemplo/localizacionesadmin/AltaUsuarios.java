@@ -73,8 +73,11 @@ public class AltaUsuarios extends AppCompatActivity {
     //private Context contextoActivity;
 
     //URLS DEL WS
-    private static final String EDIT_URL_VOLLEY = "http://petty.hol.es/actualizar_usuario.php";//WS
-    private static final String DELETE_URL_VOLLEY = "http://petty.hol.es/borrar_usuario.php";//WS
+    //private static final String EDIT_URL_VOLLEY = "http://petty.hol.es/actualizar_usuario.php";//WS
+    //private static final String EDIT_URL_VOLLEY = "http://petylde.esy.es/actualizar_usuario.php";//WS
+    private static final String EDIT_URL_VOLLEY = "http://antonymail62.000webhostapp.com/actualizar_usuario.php";//WS
+    //private static final String DELETE_URL_VOLLEY = "http://petty.hol.es/borrar_usuario.php";//WS
+    private static final String DELETE_URL_VOLLEY = "http://antonymail62.000webhostapp.com/borrar_usuario.php";//WS
     //Parametros enviados al WS.
     private static final String KEY_ID_USUARIO = "Id";
     private static final String KEY_PASSWORD = "Password";

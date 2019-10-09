@@ -20,11 +20,13 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +42,12 @@ public class MapaTodas extends AppCompatActivity implements OnMapReadyCallback {
     private float zoom = 5;
     private static final String LOGTAG = "OBTENER MARCADORES";
     private String usuarioMapas;//Por si el método fuera alguna vez POST
+
+    //PARA DIBUJAR LAS LÍNEAS ENTRE LOS MARQADORES
+    private  PolylineOptions lineOptions;
+    private ArrayList<LatLng> points = null;
+    LatLng center = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,15 +72,22 @@ public class MapaTodas extends AppCompatActivity implements OnMapReadyCallback {
         map.getUiSettings().setMapToolbarEnabled(false);//Deshabilitamos los iconos con accesos a googlemaps porque la app no necesita ubicación.
         map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
 
+        //lineOptions = null;
+
         traerMarcadores();
+
     }
 
     private void traerMarcadores() {
 
+        //https://maps.googleapis.com/maps/api/directions/json?origin=Toronto&destination=Montreal&key=AIzaSyCmxE12dv0ru-QSvb4Rk5XL5CsxbY47EoY
+        //https://maps.googleapis.com/maps/api/directions/json?origin=40.3292,-3.87157&destination=40.3258,-3.8682
+
 
         String tag_json_obj_actual = "json_obj_req_actual";
         //Traemos todas las localizaciones de todos los usuarios
-        patron_Busqueda_Url = "http://petty.hol.es/obtener_localizaciones_todas.php";
+        //patron_Busqueda_Url = "http://petty.hol.es/obtener_localizaciones_todas.php";
+        patron_Busqueda_Url = "http://antonymail62.000webhostapp.com/obtener_localizaciones_todas.php";
         //Método GET
         metodo_Get_POST = 0;
         final String KEY_USERNAME_MARCADOR = "Usuario";
@@ -112,11 +127,16 @@ public class MapaTodas extends AppCompatActivity implements OnMapReadyCallback {
                             int resultJSON = Integer.parseInt(json_Object.getString("estado"));
                             Log.v(LOGTAG, "Valor de estado: " + resultJSON);
 
+                            //PARA DIBUJAR LAS LÍNEAS ENTRE LOS MARQADORES
+                            points = new ArrayList<LatLng>();
+                            lineOptions = new PolylineOptions();
+
 
                             JSONArray json_array = json_Object.getJSONArray("alumnos");
                             //JSONArray json_array = response.getJSONArray("alumnos");
                             for (int z = 0; z < json_array.length(); z++) {
                                 //usuario = json_array.getJSONObject(z).getString("Usuario");
+
 
                                 usuario = json_array.getJSONObject(z).getString("Username");
                                 poblacion = json_array.getJSONObject(z).getString("Poblacion");
@@ -128,7 +148,20 @@ public class MapaTodas extends AppCompatActivity implements OnMapReadyCallback {
                                 fechaHora = json_array.getJSONObject(z).getString("FechaHora");
                                 localizacion = new LatLng(latitud, longitud);
 
-                                        map.addMarker(new MarkerOptions()
+                                //PARA DIBUJAR LAS LÍNEAS ENTRE LOS MARQADORES----
+                         /*       points.add(localizacion);
+                                // Agregamos todos los puntos en la ruta al objeto LineOptions
+                                lineOptions.addAll(points);
+                                //Definimos el grosor de las Polilíneas
+                                lineOptions.width(10);
+                                //Definimos el color de la Polilíneas
+                                lineOptions.color(Color.BLUE);
+                                // Dibujamos las Polilineas en el Google Map para cada ruta
+                                map.addPolyline(lineOptions);*/
+
+
+
+                                map.addMarker(new MarkerOptions()
                                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.placeholder_green))
                                                 .anchor(0.0f, 1.0f)
                                                 .title(usuario)
@@ -138,7 +171,12 @@ public class MapaTodas extends AppCompatActivity implements OnMapReadyCallback {
 
                                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(localizacion, zoom));
 
+
+
+
                             }//fin del else de marcadores
+
+
 
 
 

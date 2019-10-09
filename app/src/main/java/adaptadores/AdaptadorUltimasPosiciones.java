@@ -32,7 +32,7 @@ public class AdaptadorUltimasPosiciones extends RecyclerView.Adapter<AdaptadorUl
     //private JsonObjectRequest myjsonObjectRequestAdaptador;//Tipo de petición Volley utilizada...
 
 
-    //Constructor de la clase Adaptador
+    //Constructor de la clase AdaptadorUsuarios
     public AdaptadorUltimasPosiciones(List<UltimasPosiciones> datos, OnItemClickListener escucha, Context contexto) {
         this.contexto = contexto;
         this.escucha = escucha;

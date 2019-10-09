@@ -28,7 +28,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import adaptadores.Adaptador;
+import adaptadores.AdaptadorUsuarios;
 import adaptadores.AdaptadorTodasPosiciones;
 import modelos.TodasLasPosiciones;
 import volley.AppController;
@@ -42,7 +42,7 @@ import volley.MyJSonRequestImmediate;
 public class FragmentTodasPosiciones extends Fragment{
     private static final String LOGTAG = "OBTENER MARCADORES";
     /*
-        Adaptador del recycler view
+        AdaptadorUsuarios del recycler view
          */
     private AdaptadorTodasPosiciones adapter;
     /*
@@ -55,11 +55,11 @@ public class FragmentTodasPosiciones extends Fragment{
     private RecyclerView.LayoutManager lManager;
     private RequestQueue requestQueue;//Cola de peticiones de Volley. se encarga de gestionar automáticamente el envió de las peticiones, la administración de los hilos, la creación de la caché y la publicación de resultados en la UI.
     private JsonObjectRequest myjsonObjectRequest;
-    private List<TodasLasPosiciones> listdatos;//Se le enviará al Adaptador
+    private List<TodasLasPosiciones> listdatos;//Se le enviará al AdaptadorUsuarios
     private TodasLasPosiciones todasLasPosiciones;
 
     //Variable que le pasamos a la llamada del adaptador. Necesita un listener
-    private Adaptador.OnItemClickListener listener;
+    private AdaptadorUsuarios.OnItemClickListener listener;
     //private Context contexto;
 
 
@@ -88,9 +88,9 @@ public class FragmentTodasPosiciones extends Fragment{
         traerTodasPosiciones();
 
        //La llamada al adaptador llega vacía. Hay que llamarle desde el método traerUsuarios();
-        /*adapter=new Adaptador(listdatos,listener,getContext());
+        /*adapter=new AdaptadorUsuarios(listdatos,listener,getContext());
         lista.setAdapter(adapter);*/
-        //adapter=new Adaptador(listdatos,this,this);
+        //adapter=new AdaptadorUsuarios(listdatos,this,this);
 
         //return super.onCreateView(inflater, container, savedInstanceState);
         return v;
@@ -107,7 +107,8 @@ public class FragmentTodasPosiciones extends Fragment{
 
         String tag_json_obj_actual = "json_obj_req_actual";
         //http://petty.hol.es/obtener_localizaciones.php
-        String patronUrl = "http://petty.hol.es/obtener_localizaciones_todas.php";
+        //String patronUrl = "http://petty.hol.es/obtener_localizaciones_todas.php";
+        String patronUrl = "http://antonymail62.000webhostapp.com/obtener_localizaciones_todas.php";
         String uri = String.format(patronUrl);
 
         listdatos= new ArrayList<TodasLasPosiciones>();
@@ -182,10 +183,10 @@ public class FragmentTodasPosiciones extends Fragment{
 
                                 }
 
-                           // }new Adaptador.OnItemClickListener()
+                           // }new AdaptadorUsuarios.OnItemClickListener()
 
                         //Al adaptador le pasamos la lista, el listener y el contexto
-                        //Le pasamos new Adaptador.OnItemClickListener() para inicializar el listener
+                        //Le pasamos new AdaptadorUsuarios.OnItemClickListener() para inicializar el listener
                         adapter=new AdaptadorTodasPosiciones(listdatos, new AdaptadorTodasPosiciones.OnItemClickListener() {
                             @Override
                             public void onClick(RecyclerView.ViewHolder holder, int idPromocion, View v) {
@@ -202,7 +203,7 @@ public class FragmentTodasPosiciones extends Fragment{
                         },getContext());
 
                             lista.setAdapter(adapter);
-                            /*adapter=new Adaptador(listdatos,listener,getContext());
+                            /*adapter=new AdaptadorUsuarios(listdatos,listener,getContext());
                             lista.setAdapter(adapter);*/
 
 

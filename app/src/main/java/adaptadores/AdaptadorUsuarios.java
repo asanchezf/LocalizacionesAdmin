@@ -20,7 +20,7 @@ import modelos.Usuarios;
 /**
  * Created by Susana on 22/09/2016.
  */
-public class Adaptador extends RecyclerView.Adapter<Adaptador.UsuariosViewHolder> {
+public class AdaptadorUsuarios extends RecyclerView.Adapter<AdaptadorUsuarios.UsuariosViewHolder> {
 
     private final Context contexto;
     private List<Usuarios> items;//Collection de Modelo. Los datos nos llegan desde el Main en esta Collection List()
@@ -33,15 +33,15 @@ public class Adaptador extends RecyclerView.Adapter<Adaptador.UsuariosViewHolder
     //private JsonObjectRequest myjsonObjectRequestAdaptador;//Tipo de petición Volley utilizada...
 
 
-    //Constructor de la clase Adaptador
-    public Adaptador(List<Usuarios> datos, OnItemClickListener escucha, Context contexto) {
+    //Constructor de la clase AdaptadorUsuarios
+    public AdaptadorUsuarios(List<Usuarios> datos, OnItemClickListener escucha, Context contexto) {
         this.contexto = contexto;
         this.escucha = escucha;
         this.items = datos;
 
     }
 
-    public Adaptador(Context contexto) {
+    public AdaptadorUsuarios(Context contexto) {
         this.contexto = contexto;
     }
 

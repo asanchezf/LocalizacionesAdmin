@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -34,10 +35,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import adaptadores.Adaptador;
+import adaptadores.AdaptadorUsuarios;
 import modelos.Usuarios;
 import volley.AppController;
 import volley.MyJSonRequestImmediate;
@@ -47,7 +47,7 @@ import volley.MyJSonRequestImmediate;
  * Fragmento principal que contiene el RecyclerView con los usuarios
  */
 
-public class FragmentUsuarios extends Fragment{
+public class FragmentUsuarios extends Fragment {
     private static final String LOGTAG = "OBTENER MARCADORES";
 
     //CONSTANTES PARA EL MODO FORMULARIO Y PARA LOS TIPOS DE LLAMADA.============================
@@ -57,9 +57,9 @@ public class FragmentUsuarios extends Fragment{
     public static final int C_EDITAR = 553;
     public static final int C_ELIMINAR = 554;
     /*
-        Adaptador del recycler view
+        AdaptadorUsuarios del recycler view
          */
-    private Adaptador adapter;
+    private AdaptadorUsuarios adapter;
     /*
     Instancia global del recycler view
      */
@@ -70,11 +70,11 @@ public class FragmentUsuarios extends Fragment{
     private RecyclerView.LayoutManager lManager;
     private RequestQueue requestQueue;//Cola de peticiones de Volley. se encarga de gestionar automáticamente el envió de las peticiones, la administración de los hilos, la creación de la caché y la publicación de resultados en la UI.
     private JsonObjectRequest myjsonObjectRequest;
-    private List<Usuarios> listdatos;//Se le enviará al Adaptador
+    private List<Usuarios> listdatos;//Se le enviará al AdaptadorUsuarios
     private Usuarios usuarios;
 
     //Variable que le pasamos a la llamada del adaptador. Necesita un listener
-    private Adaptador.OnItemClickListener listener;
+    private AdaptadorUsuarios.OnItemClickListener listener;
     private Context contexto;
 
     public FragmentUsuarios() {
@@ -82,16 +82,12 @@ public class FragmentUsuarios extends Fragment{
 
     @Nullable
     @Override
-
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-         contexto = getActivity();
+        contexto = getActivity();
         View v = inflater.inflate(R.layout.fragment_usuarios, container, false);
 
         //POnemos el título haciendo referencia a la toolbar de la activity principal
         //((MainActivity) getActivity()).getSupportActionBar().setTitle("Usuarios");
-
-
-
 
         lista = (RecyclerView) v.findViewById(R.id.reciclador);
 
@@ -108,14 +104,13 @@ public class FragmentUsuarios extends Fragment{
         lista.setItemAnimator(new DefaultItemAnimator());*/
 
 
-
         requestQueue = Volley.newRequestQueue(contexto);
         traerUsuarios();
 
-       //La llamada al adaptador llega vacía. Hay que llamarle desde el método traerUsuarios();
-        /*adapter=new Adaptador(listdatos,listener,getContext());
+        //La llamada al adaptador llega vacía. Hay que llamarle desde el método traerUsuarios();
+        /*adapter=new AdaptadorUsuarios(listdatos,listener,getContext());
         lista.setAdapter(adapter);*/
-        //adapter=new Adaptador(listdatos,this,this);
+        //adapter=new AdaptadorUsuarios(listdatos,this,this);
 
         //return super.onCreateView(inflater, container, savedInstanceState);
         return v;
@@ -125,10 +120,11 @@ public class FragmentUsuarios extends Fragment{
 
         String tag_json_obj_actual = "json_obj_req_actual";
 
-        String patronUrl = "http://petty.hol.es/obtener_usuarios.php";
+        //String patronUrl = "http://petty.hol.es/obtener_usuarios.php";
+        String patronUrl = "http://antonymail62.000webhostapp.com/obtener_usuarios.php";
         String uri = String.format(patronUrl);
 
-        listdatos= new ArrayList<Usuarios>();
+        listdatos = new ArrayList<Usuarios>();
 
         Log.v(LOGTAG, "Ha llegado a immediateRequestTiempoActual. Uri: " + uri);
 
@@ -153,108 +149,102 @@ public class FragmentUsuarios extends Fragment{
                         String id_Android = "";
                         String telefono = "";
                         String alta = "";
-                        String ultimamodi="";
+                        String ultimamodi = "";
                         String observaciones = "";
-
-
 
 
                         try {
 
                             //for (int i = 0; i < response2.length(); i++) {
-                                //JSONObject json_estado = response2.getJSONObject("estado");
-                                String resultJSON = response2.getString("estado");
-
-                                JSONArray json_array = response2.getJSONArray("alumnos");
-                                for (int z = 0; z < json_array.length(); z++) {
-                                    //OJO: se ha cambiado a int. Antes era un String
-                                    id= json_array.getJSONObject(z).getInt("Id");
-                                    username = json_array.getJSONObject(z).getString("Username");
-                                    password = json_array.getJSONObject(z).getString("Password");
-                                    email = json_array.getJSONObject(z).getString("Email");
-                                    id_Android = json_array.getJSONObject(z).getString("ID_Android");
-
-                                    telefono = json_array.getJSONObject(z).getString("Telefono");
-                                    alta = json_array.getJSONObject(z).getString("FechaCreacion");
-                                    ultimamodi= json_array.getJSONObject(z).getString("FechaModificacion");
-                                    observaciones = json_array.getJSONObject(z).getString("Observaciones");
-
-                                    usuarios=new Usuarios();
-                                    usuarios.setId(id);
-                                    usuarios.setUsername(username);
-                                    usuarios.setPassword(password);
-                                    usuarios.setEmail(email);
-                                    usuarios.setID_Android(id_Android);
-                                    usuarios.setTelefono(telefono);
-                                    usuarios.setFechaCreacion(alta);
-                                    usuarios.setFechaModificacion(ultimamodi);
-                                    usuarios.setObservaciones(observaciones);
-
-                                    listdatos.add(usuarios);
-                                    Log.d(LOGTAG, "Tamaño listadatos: "+listdatos.size());
-
-                                }
-
-                           // }new Adaptador.OnItemClickListener()
-
-                        //Al adaptador le pasamos la lista, el listener y el contexto
-                        //Le pasamos new Adaptador.OnItemClickListener() para inicializar el listener
-                        adapter=new Adaptador(listdatos, new Adaptador.OnItemClickListener() {
-                            @Override
-                            public void onClick(RecyclerView.ViewHolder holder, final int idPromocion, final View v) {
-
-                                if(v.getId()==R.id.imagenUsuario){
-                                    Toast.makeText(getContext(),"Has pulsado en la imagen",Toast.LENGTH_LONG).show();
-                                }
-
-                                if(v.getId()==R.id.btncontactar){
-                                    //Toast.makeText(getContext(),"Has pulsado en la llamada",Toast.LENGTH_LONG).show();
-
-                                    AlertDialog.Builder dialogEliminar = new AlertDialog.Builder(getContext());
-
-                                    dialogEliminar.setIcon(android.R.drawable.ic_dialog_alert);
-                                    dialogEliminar.setTitle(getResources().getString(
-                                            R.string.agenda_call_titulo));
-                                    dialogEliminar.setMessage(getResources().getString(
-                                            R.string.agenda_call_mensaje));
-                                    dialogEliminar.setCancelable(false);
-
-                                    dialogEliminar.setPositiveButton(
-                                            getResources().getString(android.R.string.ok),
-                                            new DialogInterface.OnClickListener() {
-
-                                                public void onClick(DialogInterface dialog, int boton) {
-
-                                                        llamar(idPromocion,v);
-                                                }
-                                            });
-
-                                    dialogEliminar.setNegativeButton(android.R.string.no, null);
-
-                                    dialogEliminar.show();
+                            //JSONObject json_estado = response2.getJSONObject("estado");
+                            String resultJSON = response2.getString("estado");
 
 
+                            JSONArray json_array = response2.getJSONArray("alumnos");
 
+                            for (int z = 0; z < json_array.length(); z++) {
+                                //OJO: se ha cambiado a int. Antes era un String
+                                id = json_array.getJSONObject(z).getInt("Id");
+                                username = json_array.getJSONObject(z).getString("Username");
+                                password = json_array.getJSONObject(z).getString("Password");
+                                email = json_array.getJSONObject(z).getString("Email");
+                                id_Android = json_array.getJSONObject(z).getString("ID_Android");
 
-                                }
+                                telefono = json_array.getJSONObject(z).getString("Telefono");
+                                alta = json_array.getJSONObject(z).getString("FechaCreacion");
+                                ultimamodi = json_array.getJSONObject(z).getString("FechaModificacion");
+                                observaciones = json_array.getJSONObject(z).getString("Observaciones");
 
-                               else if(v.getId()==R.id.txtNombre){
-                                    Toast.makeText(getContext(),"Has pulsado en el nombre",Toast.LENGTH_LONG).show();
-                                }
+                                usuarios = new Usuarios();
+                                usuarios.setId(id);
+                                usuarios.setUsername(username);
+                                usuarios.setPassword(password);
+                                usuarios.setEmail(email);
+                                usuarios.setID_Android(id_Android);
+                                usuarios.setTelefono(telefono);
+                                usuarios.setFechaCreacion(alta);
+                                usuarios.setFechaModificacion(ultimamodi);
+                                usuarios.setObservaciones(observaciones);
 
-                                else{
-
-                                    //Toast.makeText(getContext(),"Has pulsado en el cardview",Toast.LENGTH_LONG).show();
-
-                                    crear(idPromocion);
-
-                                }
+                                listdatos.add(usuarios);
+                                Log.d(LOGTAG, "Tamaño listadatos: " + listdatos.size());
 
                             }
-                        },getContext());
+
+                            // }new AdaptadorUsuarios.OnItemClickListener()
+
+                            //Al adaptador le pasamos la lista, el listener y el contexto
+                            //Le pasamos new AdaptadorUsuarios.OnItemClickListener() para inicializar el listener
+                            adapter = new AdaptadorUsuarios(listdatos, new AdaptadorUsuarios.OnItemClickListener() {
+                                @Override
+                                public void onClick(RecyclerView.ViewHolder holder, final int idPromocion, final View v) {
+
+                                    if (v.getId() == R.id.imagenUsuario) {
+                                        Toast.makeText(getContext(), "Has pulsado en la imagen", Toast.LENGTH_LONG).show();
+                                    }
+
+                                    if (v.getId() == R.id.btncontactar) {
+                                        //Toast.makeText(getContext(),"Has pulsado en la llamada",Toast.LENGTH_LONG).show();
+
+                                        AlertDialog.Builder dialogEliminar = new AlertDialog.Builder(getContext());
+
+                                        dialogEliminar.setIcon(android.R.drawable.ic_dialog_alert);
+                                        dialogEliminar.setTitle(getResources().getString(
+                                                R.string.agenda_call_titulo));
+                                        dialogEliminar.setMessage(getResources().getString(
+                                                R.string.agenda_call_mensaje));
+                                        dialogEliminar.setCancelable(false);
+
+                                        dialogEliminar.setPositiveButton(
+                                                getResources().getString(android.R.string.ok),
+                                                new DialogInterface.OnClickListener() {
+
+                                                    public void onClick(DialogInterface dialog, int boton) {
+
+                                                        llamar(idPromocion, v);
+                                                    }
+                                                });
+
+                                        dialogEliminar.setNegativeButton(android.R.string.no, null);
+
+                                        dialogEliminar.show();
+
+
+                                    } else if (v.getId() == R.id.txtNombre) {
+                                        Toast.makeText(getContext(), "Has pulsado en el nombre", Toast.LENGTH_LONG).show();
+                                    } else {
+
+                                        //Toast.makeText(getContext(),"Has pulsado en el cardview",Toast.LENGTH_LONG).show();
+
+                                        Modificar(idPromocion);
+
+                                    }
+
+                                }
+                            }, getContext());
 
                             lista.setAdapter(adapter);
-                            /*adapter=new Adaptador(listdatos,listener,getContext());
+                            /*adapter=new AdaptadorUsuarios(listdatos,listener,getContext());
                             lista.setAdapter(adapter);*/
 
 
@@ -262,7 +252,7 @@ public class FragmentUsuarios extends Fragment{
                             e.printStackTrace();
                             Log.d(LOGTAG, "Error Respuesta en JSON: ");
                             pDialog.dismiss();
-                            Toast.makeText(getContext(),"Se ha producido un error conectando con el servidor.",Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), "Se ha producido un error conectando con el servidor.", Toast.LENGTH_LONG).show();
                         }
 
                         //priority = Request.Priority.IMMEDIATE;
@@ -280,7 +270,7 @@ public class FragmentUsuarios extends Fragment{
 
                     }
                 }
-        ) ;
+        );
 
         // Añadir petición a la cola
         AppController.getInstance().addToRequestQueue(myjsonObjectRequest, tag_json_obj_actual);
@@ -288,36 +278,47 @@ public class FragmentUsuarios extends Fragment{
     }
 
     private void llamar(int idPromocion, View v) {
-        int _id;
+        int _id = 0;
         String nombre = null;
-        String telefono=null;
-        //Reoorremos la lista de datos con un iterador para recogter los datos del registro actual: idPromocion
-        Iterator<Usuarios> it = listdatos.iterator();
+        String telefono = null;
 
+//FORMA 1:
+//Reoorremos la lista de datos con un iterador para recoger los datos del registro actual: idPromocion:
 
-        while(it.hasNext()) {
-
+      /*  Iterator<Usuarios> it = listdatos.iterator();
+        while (it.hasNext()) {
             usuarios = (Usuarios) it.next();
-
             //idPromocion contiene el id de bbdd del usuario. Lo comparamos con el id que tiene la coleccion para recoger
             //todos los datos del registro seleccionado
-            if (usuarios.getId()==(idPromocion)){
+            if (usuarios.getId() == (idPromocion)) {
 
-                _id= usuarios.getId();
-                nombre= usuarios.getUsername();
-                telefono= usuarios.getTelefono();
-
+                _id = usuarios.getId();
+                nombre = usuarios.getUsername();
+                telefono = usuarios.getTelefono();
                 // Toast.makeText(getActivity(),"Datos recogidos.",Toast.LENGTH_LONG).show();
                 break;
             }
+        }*/
 
 
+//FORMA 2:
+//Reoorremos la lista de datos con un iterador para recogter los datos del registro actual: idPromocion
+        for (Usuarios listdato : listdatos) {
+            usuarios = listdato;
+            //idPromocion contiene el id de bbdd del usuario. Lo comparamos con el id que tiene la coleccion para recoger
+            //todos los datos del registro seleccionado
+            if (usuarios.getId() == (idPromocion)) {
+                _id = usuarios.getId();
+                nombre = usuarios.getUsername();
+                telefono = usuarios.getTelefono();
+                break;
+            }
         }
 
         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + telefono));
 
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
+            // TODO: SE DEBEN GESTIONAR LOS PERMISOS PARA ANDROID M Y SUPERIORES
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
@@ -325,72 +326,67 @@ public class FragmentUsuarios extends Fragment{
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
             //View v = null;
+            //Toast.makeText(contexto, "Datos recogidos " + _id +" "+nombre+" "+telefono, Toast.LENGTH_SHORT).show();
             Snackbar snack = Snackbar.make(v, R.string.agenda_permiso_llamadas, Snackbar.LENGTH_LONG);
             ViewGroup group = (ViewGroup) snack.getView();
-            group.setBackgroundColor(getResources().getColor(R.color.md_deep_orange_700));
+            //group.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            group.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.degradado_fondo));
             snack.show();
             return;
         }
         startActivity(intent);
 
 
-
     }
 
-    private void crear(int idPromocion) {
-        double dlatitud=0;
-        double dlongitud = 0;
+    private void Modificar(int idPromocion) {
 
         int _id;
         String nombre = null;
-        String telefono=null;
-        String id_Android=null;
-        String email=null;
-        String password=null;
-        String fechaalta=null;
-        String fechamodificacion=null;
-        _id=idPromocion;
-        String observaciones=null;
+        String telefono = null;
+        String id_Android = null;
+        String email = null;
+        String password = null;
+        String fechaalta = null;
+        String fechamodificacion = null;
+        _id = idPromocion;
+        String observaciones = null;
 
-        //Reoorremos la lista de datos con un iterador para recogter los datos del registro actual: idPromocion
-        Iterator<Usuarios> it = listdatos.iterator();
 
-        while(it.hasNext()) {
 
-            usuarios = (Usuarios) it.next();
-
+        //Reoorremos la lista de datos para recoger los datos del registro actual: idPromocion
+        for (Usuarios misUsuarios : listdatos) {
+            usuarios = misUsuarios;
             //idPromocion contiene el id de bbdd del usuario. Lo comparamos con el id que tiene la coleccion para recoger
             //todos los datos del registro seleccionado
-            if (usuarios.getId()==(idPromocion)){
-
-                _id= usuarios.getId();
-                nombre= usuarios.getUsername();
-                telefono= usuarios.getTelefono();
-                id_Android= usuarios.getID_Android();
-                email= usuarios.getEmail();
-                password= usuarios.getPassword();
-                fechaalta=usuarios.getFechaCreacion();
-                fechamodificacion=usuarios.getFechaModificacion();
-                observaciones=usuarios.getObservaciones();
-               // Toast.makeText(getActivity(),"Datos recogidos.",Toast.LENGTH_LONG).show();
+            if (usuarios.getId() == idPromocion) {
+                _id = usuarios.getId();
+                nombre = usuarios.getUsername();
+                telefono = usuarios.getTelefono();
+                id_Android = usuarios.getID_Android();
+                email = usuarios.getEmail();
+                password = usuarios.getPassword();
+                fechaalta = usuarios.getFechaCreacion();
+                fechamodificacion = usuarios.getFechaModificacion();
+                observaciones = usuarios.getObservaciones();
                 break;
-            }
+              }
 
 
         }
 
         //Long fechaaltaLong= Long.parseLong(fechaalta);
-        Intent intent=new Intent(getActivity(),AltaUsuarios.class);
-        intent.putExtra("Nombre",nombre);
-        intent.putExtra("Id",_id);
-        intent.putExtra("ID_Android",id_Android);
-        intent.putExtra("Telefono",telefono);
-        intent.putExtra("Email",email);
-        intent.putExtra("Password",password);
-        intent.putExtra("FechaAlta",fechaalta);
+        Intent intent = new Intent(getActivity(), AltaUsuarios.class);
+        intent.putExtra("Nombre", nombre);
+        intent.putExtra("Id", _id);
+        intent.putExtra("ID_Android", id_Android);
+        intent.putExtra("Telefono", telefono);
+        intent.putExtra("Email", email);
+        intent.putExtra("Password", password);
+        intent.putExtra("FechaAlta", fechaalta);
         //intent.putExtra("FechaAlta",fechaalta);
-        intent.putExtra("FechaModificacion",fechamodificacion);
-        intent.putExtra("Observaciones",observaciones);
+        intent.putExtra("FechaModificacion", fechamodificacion);
+        intent.putExtra("Observaciones", observaciones);
 
         startActivity(intent);
 
@@ -408,7 +404,7 @@ public class FragmentUsuarios extends Fragment{
     @Override
     public void onResume() {
         super.onResume();
-        if(adapter!=null) {
+        if (adapter != null) {
             traerUsuarios();
             adapter.notifyDataSetChanged();
         }

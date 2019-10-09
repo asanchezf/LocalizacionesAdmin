@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import adaptadores.Adaptador;
+import adaptadores.AdaptadorUsuarios;
 import adaptadores.AdaptadorUltimasPosiciones;
 import mapas.MapaUltimasPosiciones;
 import modelos.UltimasPosiciones;
@@ -56,7 +56,7 @@ import volley.MyJSonRequestImmediate;
 public class FragmentUltmasPosiciones extends Fragment implements OnMapReadyCallback {
     private static final String LOGTAG = "OBTENER MARCADORES";
     /*
-        Adaptador del recycler view
+        AdaptadorUsuarios del recycler view
          */
     private AdaptadorUltimasPosiciones adapter;
     /*
@@ -69,11 +69,11 @@ public class FragmentUltmasPosiciones extends Fragment implements OnMapReadyCall
     private RecyclerView.LayoutManager lManager;
     private RequestQueue requestQueue;//Cola de peticiones de Volley. se encarga de gestionar automáticamente el envió de las peticiones, la administración de los hilos, la creación de la caché y la publicación de resultados en la UI.
     private JsonObjectRequest myjsonObjectRequest;
-    private List<UltimasPosiciones> listdatos;//Se le enviará al Adaptador
+    private List<UltimasPosiciones> listdatos;//Se le enviará al AdaptadorUsuarios
     private UltimasPosiciones ultimasPosiciones;
     private static String LOGCAT;
     //Variable que le pasamos a la llamada del adaptador. Necesita un listener
-    private Adaptador.OnItemClickListener listener;
+    private AdaptadorUsuarios.OnItemClickListener listener;
 
     //Variables para mostrar mapa en fragment
     private GoogleMap map;
@@ -118,7 +118,7 @@ public class FragmentUltmasPosiciones extends Fragment implements OnMapReadyCall
         }*/
 
 
-        //En KIT-LAT da error. Se debe controlar...
+        //En KIT-KAT da error. Se debe controlar...
 
             if (v != null) {
                 ViewGroup parent = (ViewGroup) v.getParent();
@@ -223,7 +223,9 @@ public class FragmentUltmasPosiciones extends Fragment implements OnMapReadyCall
 
         String tag_json_obj_actual = "json_obj_req_actual";
         //http://petty.hol.es/obtener_localizaciones.php
-        String patronUrl = "http://petty.hol.es/obtener_localizaciones.php";
+        //String patronUrl = "http://petty.hol.es/obtener_localizaciones.php";
+        String patronUrl = "http://antonymail62.000webhostapp.com/obtener_localizaciones.php";
+
         String uri = String.format(patronUrl);
 
         listdatos = new ArrayList<UltimasPosiciones>();
@@ -320,10 +322,10 @@ public class FragmentUltmasPosiciones extends Fragment implements OnMapReadyCall
                             }
 
 
-                            // }new Adaptador.OnItemClickListener()
+                            // }new AdaptadorUsuarios.OnItemClickListener()
 
                             //Al adaptador le pasamos la lista, el listener y el contexto
-                            //Le pasamos new Adaptador.OnItemClickListener() para inicializar el listener
+                            //Le pasamos new AdaptadorUsuarios.OnItemClickListener() para inicializar el listener
 
                             adapter = new AdaptadorUltimasPosiciones(listdatos, new AdaptadorUltimasPosiciones.OnItemClickListener() {
 
@@ -355,7 +357,7 @@ public class FragmentUltmasPosiciones extends Fragment implements OnMapReadyCall
 
 
                             lista.setAdapter(adapter);
-                            /*adapter=new Adaptador(listdatos,listener,getContext());
+                            /*adapter=new AdaptadorUsuarios(listdatos,listener,getContext());
                             lista.setAdapter(adapter);*/
 
 

@@ -31,7 +31,7 @@ public class AdaptadorTodasPosiciones extends RecyclerView.Adapter<AdaptadorToda
     //private JsonObjectRequest myjsonObjectRequestAdaptador;//Tipo de petición Volley utilizada...
 
 
-    //Constructor de la clase Adaptador
+    //Constructor de la clase AdaptadorUsuarios
     public AdaptadorTodasPosiciones(List<TodasLasPosiciones> datos, OnItemClickListener escucha, Context contexto) {
         this.contexto = contexto;
         this.escucha = escucha;

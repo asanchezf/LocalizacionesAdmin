@@ -10,20 +10,20 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 //import android.support.v4.app.Fragment;
-;import adaptadores.Adaptador;
+;import adaptadores.AdaptadorUsuarios;
 
 
 /**
- * Fragmento principal que contiene el RecyclerView con los usuarios
+ * Fragmento principal en donde se van a dibujar el resto de fragmentos de la app
  */
 
 public class MainFragment extends Fragment {
 
 
     /*
-    Adaptador del recycler view
+    AdaptadorUsuarios del recycler view
      */
-    private Adaptador adapter;
+    private AdaptadorUsuarios adapter;
 
     /*
     Instancia global del recycler view

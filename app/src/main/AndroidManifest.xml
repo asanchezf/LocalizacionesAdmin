@@ -31,10 +31,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCmxE12dv0ru-QSvb4Rk5XL5CsxbY47EoY" />
 
-        <uses-feature
-            android:glEsVersion="0x00020000"
-            android:required="true" />
-        <!-- Fin datos para utilización googlemaps. -->
 
         <activity
             android:name=".MainActivity"
@@ -62,7 +58,9 @@
         <activity
             android:name="mapas.MapaTodas"
             android:label="@string/title_activity_mapa_todas"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme">
+        </activity>
+
     </application>
 
 </manifest>
