@@ -16,20 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <!--
-                API key for Google Maps-based APIs generada en la consola de desarrollo.
-                Google Maps, hará uso de OpenGL ES versión 2
-                Ruta para ejecutar el keytool y obtener la huella digital.
-                "C:\Program Files\Java\jre1.8.0_31\bin\keytool" -list -v -keystore "%USERPROFILE%\.android\debug.keystore" -alias androiddebugkey -storepass android -keypass android
-                -Huella:DD:E1:DD:41:C5:EB:90:AD:47:62:C0:7F:95:44:10:F4:9C:BC:82:00
-                -Api key:AIzaSyCmxE12dv0ru-QSvb4Rk5XL5CsxbY47EoY
-        -->
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCmxE12dv0ru-QSvb4Rk5XL5CsxbY47EoY" />
+        
 
 
         <activity
